@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=20261117m">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=20261117n">
 </head>
 <body id="top">
   <div class="bg-grid" aria-hidden="true"></div>
@@ -189,11 +189,12 @@
             </div>
 
             <div class="guide-actions">
-              <a class="btn btn--primary btn--sm" href="/#installers">
+              <a class="btn btn--primary btn--sm" href="/#installers" data-download="minipc">
                 I-download ang ISO
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               </a>
               <a class="btn btn--outline btn--sm" href="#top">Balik sa taas</a>
+              <span class="guide-file" data-file="minipc">payfi-debian-minipc-amd64.iso</span>
             </div>
           </article>
 
@@ -300,11 +301,12 @@
             </div>
 
             <div class="guide-actions">
-              <a class="btn btn--primary btn--sm" href="/#installers">
+              <a class="btn btn--primary btn--sm" href="/#installers" data-download="orangepi">
                 I-download ang image
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               </a>
               <a class="btn btn--outline btn--sm" href="#top">Balik sa taas</a>
+              <span class="guide-file" data-file="orangepi">payfi-orangepione-trixie-minimal.img.xz</span>
             </div>
           </article>
 
@@ -452,33 +454,6 @@
     </div>
   </footer>
 
-  <script>
-    (() => {
-      const links = [...document.querySelectorAll('.guide-toc a')];
-      const blocks = links
-        .map((link) => document.querySelector(link.getAttribute('href')))
-        .filter(Boolean);
-      if (!blocks.length) return;
-
-      const setActive = (id) => {
-        links.forEach((link) => {
-          link.classList.toggle('is-active', link.getAttribute('href') === `#${id}`);
-        });
-      };
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          const visible = entries
-            .filter((entry) => entry.isIntersecting)
-            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-          if (visible[0]) setActive(visible[0].target.id);
-        },
-        { rootMargin: '-96px 0px -55% 0px', threshold: 0 }
-      );
-
-      blocks.forEach((block) => observer.observe(block));
-      if (location.hash) setActive(location.hash.slice(1));
-    })();
-  </script>
+  <script src="/assets/js/setup.js?v=20261117a" defer></script>
 </body>
 </html>
