@@ -41,11 +41,15 @@ function initGuideDownloads() {
     .then((data) => {
       if (!data || !Array.isArray(data.installers)) return;
       const list = data.installers;
-      const pick = (pattern) => list.find((item) => pattern.test(item.fileType || ''));
+      const pick = (pattern, titlePattern) =>
+        list.find(
+          (item) =>
+            pattern.test(item.fileType || '') || (titlePattern && titlePattern.test(item.title || ''))
+        );
       const matches = {
         minipc: pick(/^iso$/i),
         orangepi: pick(/^(xz|img|gz)$/i),
-        nodemcu: pick(/^(ino|bin)$/i)
+        nodemcu: pick(/^(ino|bin)$/i, /coin ?box|nodemcu|esp8266/i)
       };
 
       Object.entries(matches).forEach(([key, item]) => {
