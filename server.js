@@ -20,6 +20,10 @@ const server = app.listen(config.port, config.host, () => {
   console.log('');
 });
 
+// Malalaking installer uploads: huwag putulin ng default 5-minute Node timeout.
+server.requestTimeout = 60 * 60 * 1000; // 1 hour
+server.headersTimeout = 2 * 60 * 1000;
+
 function shutdown(signal) {
   console.log(`\n[${signal}] Sinasara ang server...`);
   server.close(() => {

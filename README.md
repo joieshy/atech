@@ -55,7 +55,14 @@ Ang default max upload size ay **2048 MB**. Palitan sa `.env`:
 MAX_UPLOAD_MB=4096
 ```
 
-At kung nasa likod ka ng Nginx, i-match ang `client_max_body_size` sa `deploy/nginx.conf.example`.
+Kung gagamit ka ng mas malaking file (hal. `.img` na 4–8 GB), taasan din ang Nginx limit:
+
+```bash
+sudo sed -i 's/client_max_body_size 2048M;/client_max_body_size 8192M;/' /etc/nginx/sites-available/atech
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+Tapos i-restart ang app: `pm2 restart atech`.
 
 ## Palitan ang admin password
 

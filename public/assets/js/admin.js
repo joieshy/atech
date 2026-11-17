@@ -688,7 +688,12 @@ function uploadWithProgress(url, method, formData, onProgress) {
       if (xhr.status >= 200 && xhr.status < 300) {
         resolve(data);
       } else {
-        const error = new Error((data && data.error) || `Hindi na-upload ang file (${xhr.status}).`);
+        let message = data && data.error;
+        if (!message && xhr.status === 413) {
+          message = `Sobrang laki ng file para sa server (413). Maximum na ${state.maxUploadMb} MB — bawasan ang file o taasan ang limit.`;
+        }
+        if (!message) message = `Hindi na-upload ang file (${xhr.status}).`;
+        const error = new Error(message);
         error.status = xhr.status;
         reject(error);
       }
