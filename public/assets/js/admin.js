@@ -641,10 +641,10 @@ function handleSelectedFile(file) {
   if (!file) return;
   const sizeMb = file.size / (1024 * 1024);
   const allowed = /\.(apk|apks|xapk|apkm|aab|obb|exe|msi|msix|msixbundle|appx|appxbundle|cab|zip|zipx|rar|7z|tar|gz|tgz|bz2|tbz2|xz|zst|lz|lzma|z|gzip|iso|img|bin|dmg|pkg|deb|run|apkg|pdf)$/i.test(file.name)
-    || /\.(r\d{2}|\d{3})$/i.test(file.name);
+    || /\.(r\d{2}|z\d{2}|\d{3})$/i.test(file.name);
 
   if (!allowed) {
-    setUploadError('Hindi supported ang file type na ito. Gumamit ng APK/APKS, EXE/MSI/MSIX, ZIP/RAR/7Z/XZ at split archives (.001, .r00).');
+    setUploadError('Hindi supported ang file type na ito. Gumamit ng APK/APKS, EXE/MSI/MSIX, ZIP/RAR/7Z/XZ at split archives (.001, .r00, .z01).');
     $('#fileInput').value = '';
     $('#dropzone').classList.remove('has-file');
     $('#dropzoneFile').hidden = true;

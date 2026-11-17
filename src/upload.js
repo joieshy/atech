@@ -19,8 +19,8 @@ const ALLOWED_EXTENSIONS = new Set([
   '.pdf'
 ]);
 
-// Split archives: file.001, file.002 ... file.r00, file.r01 ...
-const SPLIT_ARCHIVE_EXTENSION = /^\.(r\d{2}|\d{3})$/;
+// Split archives: file.001, file.r00, file.z01 ...
+const SPLIT_ARCHIVE_EXTENSION = /^\.(r\d{2}|z\d{2}|\d{3})$/;
 
 function isAllowedExtension(extension) {
   return ALLOWED_EXTENSIONS.has(extension) || SPLIT_ARCHIVE_EXTENSION.test(extension);
@@ -49,7 +49,7 @@ const upload = multer({
     const ext = path.extname(file.originalname || '').toLowerCase();
     if (!isAllowedExtension(ext)) {
       const error = new Error(
-        `Hindi supported ang "${ext || 'walang extension'}" na file. Mga allowed: ${[...ALLOWED_EXTENSIONS].join(', ')} at split archives (.001, .r00).`
+        `Hindi supported ang "${ext || 'walang extension'}" na file. Mga allowed: ${[...ALLOWED_EXTENSIONS].join(', ')} at split archives (.001, .r00, .z01).`
       );
       error.code = 'INVALID_FILE_TYPE';
       return cb(error);
