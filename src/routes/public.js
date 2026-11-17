@@ -6,7 +6,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 const { db } = require('../db');
 const { config } = require('../config');
-const { toPublicInstaller } = require('../utils');
+const { toPublicInstaller, toAdminInstaller } = require('../utils');
 const { requireAdmin } = require('../auth');
 
 const router = express.Router();
