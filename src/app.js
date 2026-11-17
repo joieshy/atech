@@ -41,9 +41,13 @@ app.use(express.urlencoded({ extended: false, limit: '100kb' }));
 app.use(
   express.static(path.join(config.root, 'public'), {
     index: false,
-    maxAge: '1h',
+    etag: true,
+    lastModified: true,
     setHeaders(res, filePath) {
-      if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-cache');
+      // Huwag i-cache ang HTML/JS/CSS para agad makuha ang mga update.
+      if (/\.(?:html|js|css)$/i.test(filePath)) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
     }
   })
 );
