@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=20261117n">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=20261117o">
 </head>
 <body id="top">
   <div class="bg-grid" aria-hidden="true"></div>
@@ -338,6 +338,73 @@
               10kΩ pull-up papuntang 3.3V. Kailangan din ng <strong>common GND</strong> ng 12V supply at ng NodeMCU.
             </div>
 
+            <h3 class="guide-subhead">Wiring — kung WALANG custom board</h3>
+            <p class="guide-text">
+              Bare NodeMCU + breadboard o sariling wiring? Ito ang tamang connection. Kailangan ng
+              optocoupler para hindi masira ang 3.3V GPIO ng ESP8266.
+            </p>
+
+            <table class="guide-wiring">
+              <thead>
+                <tr><th>PC817 pin</th><th>Ikabit sa</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1 — anode</td>
+                  <td>Coin acceptor <code>COIN</code> / pulse (kadalasan WHITE wire) — <strong>dumaan sa 1kΩ</strong> resistor</td>
+                </tr>
+                <tr>
+                  <td>2 — cathode</td>
+                  <td>GND ng coin acceptor (12V side)</td>
+                </tr>
+                <tr>
+                  <td>4 — collector</td>
+                  <td>NodeMCU <strong>D4 (GPIO2)</strong> + <strong>10kΩ pull-up</strong> papuntang <strong>3.3V</strong></td>
+                </tr>
+                <tr>
+                  <td>3 — emitter</td>
+                  <td>GND (common ground)</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <ol class="guide-steps">
+              <li>
+                <strong>I-power ang coin acceptor</strong>
+                <span>12V DC (hiwalay na PSU o shared). Ang <code>COIN</code> wire ang pulse output nito.</span>
+              </li>
+              <li>
+                <strong>Ikabit ang optocoupler</strong>
+                <span>Pin 1 sa pulse via <strong>1kΩ</strong> · pin 2 sa GND ng acceptor · pin 4 sa <strong>D4</strong> · pin 3 sa GND.</span>
+              </li>
+              <li>
+                <strong>Lagyan ng pull-up ang D4</strong>
+                <span><strong>10kΩ</strong> resistor mula <strong>D4</strong> papuntang <strong>3.3V</strong>. (May internal pull-up ang firmware, pero mas stable ang external.)</span>
+              </li>
+              <li>
+                <strong>I-common ang GND</strong>
+                <span>Ikonekta ang GND ng 12V supply sa GND ng NodeMCU. Kung hindi common, walang reference ang pulse at hindi mabibilang ang barya.</span>
+              </li>
+              <li>
+                <strong>I-power ang NodeMCU</strong>
+                <span>Sa <strong>USB</strong> o <strong>5V → VIN</strong>. Huwag kailanman lagyan ng 12V ang 3.3V pin.</span>
+              </li>
+              <li>
+                <strong>I-check kung D4 ang gumagalaw</strong>
+                <span>Serial Monitor (115200) → i-type ang <code>MON</code> → maghulog ng barya. Kung <code>D6</code> ang lumilipat, ikabit doon o i-set ang <code>COIN_PIN2</code>.</span>
+              </li>
+              <li>
+                <strong>(Optional) Inhibit / bara sa barya</strong>
+                <span>Kung may ika-4 na wire (kadalasan GRAY) ang acceptor, ikabit ito sa <strong>D3 (GPIO0)</strong> via opto o transistor. Kung walang inhibit wire, hindi pisikal na bumabara ang barya — report lang ang gumagana.</span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>Kung MAY custom board (eAzy MT &amp; WS5 v2.0):</strong> may built-in optocoupler na, kaya huwag nang mag-PC817 —
+              ikabit lang ang acceptor sa <code>COINSLOT</code> (<code>+</code> = 12V, <code>WHITE</code> = pulse, <code>−</code> = GND).
+              Default: coin sa <code>D4</code> (GPIO2), inhibit sa <code>D3</code> (GPIO0). Walang routing ang <code>D2</code> sa board na ito.
+            </div>
+
             <h3 class="guide-subhead">Part 1 — Ihanda ang Arduino IDE</h3>
             <ol class="guide-steps">
               <li>
@@ -381,12 +448,6 @@
                 <span>Dapat may <code>BOOT coinbox-wifi 1.0</code>, <code>MAC AA:BB:…</code>, <code>IP MODE dhcp</code>, tapos <code>STATUS …</code> kada 5 segundo.</span>
               </li>
             </ol>
-
-            <div class="guide-note">
-              <strong>Custom board (eAzy MT &amp; WS5 v2.0):</strong> may built-in optocoupler na, kaya huwag nang mag-PC817 —
-              ikabit lang ang acceptor sa <code>COINSLOT</code> (<code>+</code> = 12V, <code>WHITE</code> = pulse, <code>−</code> = GND).
-              Default: coin sa <code>D4</code> (GPIO2), inhibit sa <code>D3</code> (GPIO0). Walang routing ang <code>D2</code> sa board na ito.
-            </div>
 
             <h3 class="guide-subhead">Part 3 — WiFi setup ng board</h3>
             <ol class="guide-steps" style="counter-reset: guide-step 9">
