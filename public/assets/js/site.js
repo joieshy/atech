@@ -110,7 +110,6 @@ async function init() {
     renderCategories();
     renderFilters();
     renderInstallers(state.installers);
-    renderConsole();
     renderSocials();
   } catch (error) {
     console.error('[ATECH]', error);
@@ -368,36 +367,7 @@ function buildInstallerCard(item, index) {
 
 /* -------------------------------- console UI ------------------------------ */
 
-function renderConsole() {
-  const body = $('#consoleRows');
-  body.textContent = '';
-  const items = state.installers.slice(0, 3);
-
-  if (items.length === 0) {
-    body.append(el('p', 'console-empty', 'Wala pang installer. Mag-upload sa admin.'));
-    return;
-  }
-
-  items.forEach((item, index) => {
-    const category = categoryFor(item.category);
-    const row = el('div', 'console-row');
-    row.style.setProperty('--cat', category ? category.color : '#94a3b8');
-    row.style.animationDelay = `${index * 90}ms`;
-
-    const iconBox = el('span', 'console-icon');
-    iconBox.innerHTML = icon(category ? category.icon : 'box');
-
-    const file = el('div', 'console-file');
-    file.append(
-      el('strong', null, item.title),
-      el('small', null, `v${item.version || '1.0'} · ${formatBytes(item.fileSize)} · ${item.fileType || 'FILE'}`)
-    );
-
-    const stateLabel = el('span', 'console-state', 'ready');
-    row.append(iconBox, file, stateLabel);
-    body.append(row);
-  });
-}
+/* hero console removed */
 
 /* --------------------------------- modal ---------------------------------- */
 
