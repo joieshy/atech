@@ -396,7 +396,7 @@
               </li>
               <li>
                 <strong>Buksan ang setup page</strong>
-                <span><code>http://192.168.4.1</code> kung hindi kusang bumukas ang dashboard.</span>
+                <span>Kusang bubukas ito (<em>auto-popup</em>) pagka-connect ng phone dahil may captive portal ang firmware. Kung hindi bumukas, i-open ang <code>http://192.168.4.1</code>.</span>
               </li>
               <li>
                 <strong>Ilagay ang settings</strong>
@@ -424,10 +424,17 @@
                 <span>Maghulog ng barya. Dapat tumaas ang counter at may <code>POST /api/hardware/coins</code> na nagre-return ng <code>200</code>.</span>
               </li>
               <li>
-                <strong>(Optional) Fixed IP</strong>
-                <span>Admin → Network → Fixed / static IP devices → ilagay ang IP + MAC ng board. Laging DHCP ang firmware, kaya sa server gagawin ang reservation.</span>
+                <strong>I-reserve at i-bypass sa admin</strong>
+                <span>Admin → Network → <em>Fixed / static IP devices</em> → ilagay ang <strong>IP</strong> (kahit anong libre sa subnet) at ang <strong>MAC</strong> ng board (nasa Serial Monitor o setup dashboard), tapos <em>Add device</em> → <em>Save &amp; apply rules</em>. Naka-bypass na ito — hindi sisingilin ng captive portal at laging pareho ang IP.</span>
               </li>
             </ol>
+
+            <div class="guide-note">
+              <strong>Buong flow:</strong> i-flash ang firmware → i-connect ang phone sa <code>CoinBox-Setup</code>
+              (auto-popup ang setup page) → i-save ang WiFi + server settings → i-add ang MAC sa
+              <em>Admin → Network → Fixed / static IP devices</em> para naka-bypass at reserved ang IP →
+              maghulog ng barya para i-test.
+            </div>
 
             <div class="guide-note">
               <strong>Diagnostics sa Serial Monitor:</strong> <code>MON</code> (hanapin kung <code>D4</code> o <code>D6</code> ang gumagalaw kapag may barya),
