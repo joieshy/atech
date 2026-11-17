@@ -34,6 +34,7 @@ function toPublicInstaller(row) {
     description: row.description,
     fileSize: row.file_size,
     fileType: row.file_ext ? row.file_ext.replace('.', '').toUpperCase() : '',
+    coverUrl: row.cover_name ? `/media/covers/${encodeURIComponent(row.cover_name)}` : null,
     downloads: row.downloads,
     featured: Boolean(row.featured),
     isDemo: Boolean(row.is_demo),

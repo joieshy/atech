@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/admin.css?v=20261117f">
+  <link rel="stylesheet" href="/assets/css/admin.css?v=20261117h">
 </head>
 <body class="admin-body">
   <div class="admin-grid-bg" aria-hidden="true"></div>
@@ -434,6 +434,7 @@
                 </div>
                 <dl class="info-list">
                   <div><dt>Max upload size</dt><dd id="infoMaxUpload">2 GB</dd></div>
+                  <div><dt>Max cover image</dt><dd id="infoMaxCover">8 MB</dd></div>
                   <div><dt>Database</dt><dd>SQLite (data/atech.db)</dd></div>
                   <div><dt>File storage</dt><dd>storage/installers</dd></div>
                   <div><dt>Node runtime</dt><dd id="infoNode">—</dd></div>
@@ -530,6 +531,26 @@
           <span id="uploadPercent">0%</span>
         </div>
 
+        <div class="cover-field">
+          <span class="field-label">Cover image <span class="field-optional">optional</span></span>
+          <div class="cover-uploader" id="coverDropzone" title="I-click para pumili o palitan ang cover image">
+            <input type="file" id="coverInput" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" hidden>
+            <div class="cover-placeholder" id="coverPlaceholder">
+              <span class="cover-placeholder-icon">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+              </span>
+              <span>
+                <strong>Maglagay ng cover image</strong>
+                <small id="coverHint">JPG, PNG, WEBP, GIF · max 8 MB</small>
+              </span>
+            </div>
+            <div class="cover-preview" id="coverPreviewWrap" hidden>
+              <img id="coverPreview" alt="Cover preview">
+            </div>
+            <button class="cover-remove" id="coverRemove" type="button" hidden>Remove image</button>
+          </div>
+        </div>
+
         <div class="form-grid form-grid--modal">
           <label class="field field--full">
             <span class="field-label">Pangalan ng installer <b>*</b></span>
@@ -609,6 +630,6 @@
 
   <div class="toast-stack" id="toastStack" aria-live="polite"></div>
 
-  <script src="/assets/js/admin.js?v=20261117g" defer></script>
+  <script src="/assets/js/admin.js?v=20261117h" defer></script>
 </body>
 </html>

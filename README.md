@@ -6,7 +6,7 @@ Public download site + web admin para sa mga installer ng **PisoWiFi**, **PisoNe
 
 ## Ano ang kasama
 
-- **Public site** (`/`) — hero, categories, search, filter, sort, details modal, download counter, FAQ at social links.
+- **Public site** (`/`) - hero, categories, search, filter, sort, details modal, download counter, cover images at social links.
 - **Web admin** (`/admin`) — split-screen login page, overview dashboard na may 7-day download chart, installer table, upload/edit/delete, publish/draft toggle at site settings.
 - **SQLite database** — `data/atech.db`, awtomatikong ginagawa sa first run. Walang MySQL/Postgres na kailangan.
 - **Direct downloads** — `/download/:slug` ang nag-stream ng file mula sa `storage/installers/` at nagbibilang ng downloads.
@@ -46,13 +46,15 @@ Pag-first run, gagawa ito ng `.env` na may random admin password at ipi-print sa
 1. Pumunta sa `/admin` → **New upload**.
 2. I-drop o i-click ang file (APK, APKS, XAPK, EXE, MSI, MSIX, ZIP, RAR, 7Z, XZ, ISO, IMG, TAR, GZ, BIN, DMG, DEB, RUN, PDF, at split archives `.001` / `.r00` / `.z01`).
 3. Punan ang title, category, version at description.
-4. Piliin kung **Published** (visible agad sa site) o **Featured** (lalabas sa unahan).
-5. I-submit. Naka-save na ang file sa `storage/installers/` at ang record sa SQLite.
+4. **Optional:** maglagay ng **cover image** (JPG, PNG, WEBP, GIF o AVIF; max 8 MB). Lalabas ito sa public card at details modal.
+5. Piliin kung **Published** (visible agad sa site) o **Featured** (lalabas sa unahan).
+6. I-submit. Naka-save ang file sa `storage/installers/`, ang cover sa `storage/covers/`, at ang record sa SQLite.
 
 Ang default max upload size ay **2048 MB**. Palitan sa `.env`:
 
 ```env
 MAX_UPLOAD_MB=4096
+MAX_COVER_MB=8
 ```
 
 Kung gagamit ka ng mas malaking file (hal. `.img` na 4–8 GB), taasan din ang Nginx limit:
@@ -99,6 +101,7 @@ ATECHWEB/
 │     ├─ js/site.js
 │     └─ js/admin.js
 ├─ storage/installers/       # uploaded installer files (hindi naka-commit)
+├─ storage/covers/           # uploaded cover images (hindi naka-commit)
 ├─ data/atech.db             # SQLite database (hindi naka-commit)
 ├─ deploy/                   # nginx + systemd samples
 ├─ ecosystem.config.cjs      # PM2 config (optional)
@@ -110,10 +113,11 @@ ATECHWEB/
 | Ano | Saan |
 | --- | --- |
 | Installer files | `storage/installers/` |
+| Cover images | `storage/covers/` |
 | Database (metadata, downloads, settings) | `data/atech.db` (+ `-wal`, `-shm`) |
 | Admin password / config | `.env` |
 
-I-backup ang `data/` at `storage/installers/` para hindi mawala ang files at stats. Automatic na naka-`WAL` mode ang SQLite.
+I-backup ang `data/`, `storage/installers/` at `storage/covers/` para hindi mawala ang files, covers at stats. Automatic na naka-`WAL` mode ang SQLite.
 
 ## Categories
 

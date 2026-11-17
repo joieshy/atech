@@ -336,6 +336,16 @@ function buildInstallerCard(item, index) {
   card.style.setProperty('--cat', color);
   card.style.animationDelay = `${Math.min(index, 8) * 35}ms`;
 
+  if (item.coverUrl) {
+    const cover = el('div', 'card-cover');
+    const coverImage = el('img');
+    coverImage.src = item.coverUrl;
+    coverImage.alt = '';
+    coverImage.decoding = 'async';
+    cover.append(coverImage);
+    card.append(cover);
+  }
+
   const top = el('div', 'card-top');
   const iconBox = el('span', 'installer-icon');
   iconBox.innerHTML = icon(category ? category.icon : 'box');
@@ -396,6 +406,18 @@ function openModal(item) {
 
   $('#modalIcon').style.setProperty('--cat', color);
   $('#modalIcon').innerHTML = icon(category ? category.icon : 'box');
+
+  const coverWrap = $('#modalCoverWrap');
+  const coverImage = $('#modalCover');
+  if (coverWrap && coverImage) {
+    if (item.coverUrl) {
+      coverImage.src = item.coverUrl;
+      coverWrap.hidden = false;
+    } else {
+      coverImage.removeAttribute('src');
+      coverWrap.hidden = true;
+    }
+  }
 
   const badge = $('#modalCategory');
   badge.textContent = category ? category.name : 'Installer';

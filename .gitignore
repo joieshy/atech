@@ -3,4 +3,6 @@ node_modules/
 data/
 storage/installers/*
 !storage/installers/.gitkeep
+storage/covers/*
+!storage/covers/.gitkeep
 *.log

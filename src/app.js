@@ -69,6 +69,15 @@ app.get('/license', (req, res) => {
   res.sendFile(path.join(config.root, 'public', 'license.html'));
 });
 
+app.use(
+  '/media/covers',
+  express.static(config.coverDir, {
+    index: false,
+    maxAge: '7d',
+    immutable: true
+  })
+);
+
 app.get('/healthz', (req, res) => {
   res.json({ status: 'ok', uptime: Math.round(process.uptime()) });
 });
@@ -92,7 +101,7 @@ app.use((error, req, res, next) => {
     return res.status(400).json({ error: 'Hindi na-upload ang file. Subukan ulit.' });
   }
 
-  if (error.code === 'INVALID_FILE_TYPE' || error.code === 'INVALID_FILE_NAME') {
+  if (error.code === 'INVALID_FILE_TYPE' || error.code === 'INVALID_FILE_NAME' || error.code === 'INVALID_IMAGE_TYPE') {
     return res.status(400).json({ error: error.message });
   }
 

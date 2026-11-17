@@ -94,7 +94,7 @@ router.get('/api/installers', (req, res) => {
   const rows = db
     .prepare(
       `SELECT id, slug, title, category, version, description, file_size, file_ext,
-              downloads, featured, is_demo, created_at, updated_at
+              cover_name, downloads, featured, is_demo, created_at, updated_at
        FROM installers
        WHERE ${where.join(' AND ')}
        ORDER BY ${orderBy}

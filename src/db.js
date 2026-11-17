@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS installers (
   original_name TEXT,
   file_size     INTEGER NOT NULL DEFAULT 0,
   file_ext      TEXT NOT NULL DEFAULT '',
+  cover_name    TEXT,
   downloads     INTEGER NOT NULL DEFAULT 0,
   featured      INTEGER NOT NULL DEFAULT 0,
   published     INTEGER NOT NULL DEFAULT 1,
@@ -66,6 +67,12 @@ CREATE TABLE IF NOT EXISTS sessions (
 );
 CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
 `);
+
+// Migration para sa existing databases na wala pang cover image column.
+const installerColumns = db.prepare('PRAGMA table_info(installers)').all();
+if (!installerColumns.some((column) => column.name === 'cover_name')) {
+  db.exec('ALTER TABLE installers ADD COLUMN cover_name TEXT');
+}
 
 const CATEGORIES = [
   {

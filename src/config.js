@@ -48,13 +48,15 @@ const config = {
   adminPassword: process.env.ADMIN_PASSWORD || 'atech-admin',
   sessionSecret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex'),
   maxUploadMb: Math.max(1, Number(process.env.MAX_UPLOAD_MB) || 2048),
+  maxCoverMb: Math.max(1, Number(process.env.MAX_COVER_MB) || 8),
   seedDemo: String(process.env.SEED_DEMO || 'true').toLowerCase() !== 'false',
   dataDir: path.join(ROOT, 'data'),
   uploadDir: path.join(ROOT, 'storage', 'installers'),
+  coverDir: path.join(ROOT, 'storage', 'covers'),
   generatedPassword
 };
 
-for (const dir of [config.dataDir, config.uploadDir]) {
+for (const dir of [config.dataDir, config.uploadDir, config.coverDir]) {
   fs.mkdirSync(dir, { recursive: true });
 }
 

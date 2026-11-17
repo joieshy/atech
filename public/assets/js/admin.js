@@ -26,6 +26,10 @@ const state = {
   overview: null,
   sessions: [],
   maxUploadMb: 2048,
+  maxCoverMb: 8,
+  coverMode: 'none',
+  coverExistingUrl: null,
+  coverObjectUrl: null,
   activeView: 'overview',
   filters: { q: '', category: 'all', status: 'all' },
   editing: null,
@@ -161,6 +165,7 @@ async function loadData() {
     state.settings = settings.settings || {};
     state.categories = settings.categories || [];
     state.maxUploadMb = settings.maxUploadMb || 2048;
+    state.maxCoverMb = settings.maxCoverMb || 8;
 
     renderStats();
     renderChart();
@@ -172,6 +177,7 @@ async function loadData() {
     renderCategoryOptions();
     fillSettingsForm();
     $('#infoMaxUpload').textContent = `${state.maxUploadMb} MB`;
+    $('#infoMaxCover').textContent = `${state.maxCoverMb} MB`;
     $('#infoNode').textContent = settings.runtime || 'Node.js';
     await loadSessions();
   } catch (error) {
@@ -392,7 +398,15 @@ function renderInstallerTable() {
     const wrap = el('div', 'cell-installer');
     const cellIcon = el('span', 'cell-icon');
     cellIcon.style.setProperty('--cat', color);
-    cellIcon.innerHTML = icon(category ? category.icon : 'box');
+    if (item.coverUrl) {
+      const cover = el('img');
+      cover.src = item.coverUrl;
+      cover.alt = '';
+      cover.loading = 'lazy';
+      cellIcon.append(cover);
+    } else {
+      cellIcon.innerHTML = icon(category ? category.icon : 'box');
+    }
     const text = el('div', 'cell-text');
     const title = el('strong', null, item.title);
     title.title = item.title;
@@ -595,6 +609,7 @@ function openUploadModal(item = null) {
   $('#dropzone').classList.remove('has-file', 'is-dragover');
   $('#dropzoneFile').hidden = true;
   $('#dropzoneFile').textContent = '';
+  resetCoverField(item);
 
   if (item) {
     $('#uploadModalTitle').textContent = 'I-edit ang installer';
@@ -637,6 +652,10 @@ function closeUploadModal() {
   if (state.uploading) return;
   $('#uploadModal').hidden = true;
   state.editing = null;
+  if (state.coverObjectUrl) {
+    URL.revokeObjectURL(state.coverObjectUrl);
+    state.coverObjectUrl = null;
+  }
   if ($('#confirmModal').hidden) document.body.style.overflow = '';
 }
 
@@ -673,6 +692,84 @@ function handleSelectedFile(file) {
   const chip = $('#dropzoneFile');
   chip.hidden = false;
   chip.textContent = `${file.name} · ${formatBytes(file.size)}`;
+}
+
+/* -------------------------------- cover image ------------------------------ */
+
+function resetCoverField(item) {
+  if (state.coverObjectUrl) {
+    URL.revokeObjectURL(state.coverObjectUrl);
+    state.coverObjectUrl = null;
+  }
+  const input = $('#coverInput');
+  if (input) input.value = '';
+  state.coverExistingUrl = item && item.coverUrl ? item.coverUrl : null;
+  state.coverMode = state.coverExistingUrl ? 'keep' : 'none';
+
+  const wrap = $('#coverPreviewWrap');
+  const img = $('#coverPreview');
+  const placeholder = $('#coverPlaceholder');
+  const remove = $('#coverRemove');
+  const hint = $('#coverHint');
+  if (hint) hint.textContent = `JPG, PNG, WEBP, GIF · max ${state.maxCoverMb} MB`;
+  if (!wrap || !img || !placeholder || !remove) return;
+
+  if (state.coverExistingUrl) {
+    img.src = state.coverExistingUrl;
+    wrap.hidden = false;
+    placeholder.hidden = true;
+    remove.hidden = false;
+  } else {
+    img.removeAttribute('src');
+    wrap.hidden = true;
+    placeholder.hidden = false;
+    remove.hidden = true;
+  }
+  $('#coverDropzone').classList.remove('is-dragover');
+}
+
+function showCoverPreview(src) {
+  $('#coverPreview').src = src;
+  $('#coverPreviewWrap').hidden = false;
+  $('#coverPlaceholder').hidden = true;
+  $('#coverRemove').hidden = false;
+}
+
+function handleCoverFile(file) {
+  if (!file) return;
+
+  const allowed = /\.(jpe?g|png|webp|gif|avif)$/i.test(file.name);
+  if (!allowed) {
+    setUploadError('Hindi supported ang image type. Gumamit ng JPG, PNG, WEBP, GIF o AVIF.');
+    $('#coverInput').value = '';
+    return;
+  }
+
+  const maxMb = state.maxCoverMb || 8;
+  if (file.size > maxMb * 1024 * 1024) {
+    setUploadError(`Sobrang laki ng cover image (${formatBytes(file.size)}). Maximum na ${maxMb} MB.`);
+    $('#coverInput').value = '';
+    return;
+  }
+
+  $('#uploadError').hidden = true;
+  if (state.coverObjectUrl) URL.revokeObjectURL(state.coverObjectUrl);
+  state.coverObjectUrl = URL.createObjectURL(file);
+  state.coverMode = 'replace';
+  showCoverPreview(state.coverObjectUrl);
+}
+
+function removeCover() {
+  if (state.coverObjectUrl) {
+    URL.revokeObjectURL(state.coverObjectUrl);
+    state.coverObjectUrl = null;
+  }
+  $('#coverInput').value = '';
+  state.coverMode = state.coverExistingUrl ? 'remove' : 'none';
+  $('#coverPreview').removeAttribute('src');
+  $('#coverPreviewWrap').hidden = true;
+  $('#coverPlaceholder').hidden = false;
+  $('#coverRemove').hidden = true;
 }
 
 function uploadWithProgress(url, method, formData, onProgress) {
@@ -723,6 +820,7 @@ async function submitUpload(event) {
   const title = $('#fieldTitle').value.trim();
   const category = $('#fieldCategory').value;
   const file = $('#fileInput').files[0];
+  const coverFile = $('#coverInput').files[0];
 
   $('#uploadError').hidden = true;
 
@@ -754,6 +852,8 @@ async function submitUpload(event) {
   formData.append('published', $('#fieldPublished').checked ? '1' : '0');
   formData.append('featured', $('#fieldFeatured').checked ? '1' : '0');
   if (file) formData.append('file', file);
+  if (coverFile) formData.append('cover', coverFile);
+  if (!coverFile && state.coverMode === 'remove') formData.append('removeCover', '1');
 
   state.uploading = true;
   const submit = $('#uploadSubmit');
@@ -778,6 +878,11 @@ async function submitUpload(event) {
     state.uploading = false;
     $('#uploadModal').hidden = true;
     document.body.style.overflow = '';
+    if (state.coverObjectUrl) {
+      URL.revokeObjectURL(state.coverObjectUrl);
+      state.coverObjectUrl = null;
+    }
+    state.coverMode = 'none';
     state.editing = null;
     toast(editing ? 'Na-update ang installer.' : 'Nai-upload ang bagong installer.');
     await refreshData();
@@ -1087,6 +1192,40 @@ function bindEvents() {
     transfer.items.add(file);
     $('#fileInput').files = transfer.files;
     handleSelectedFile(file);
+  });
+
+  const coverDropzone = $('#coverDropzone');
+  const coverInput = $('#coverInput');
+  coverInput.addEventListener('change', (event) => {
+    handleCoverFile(event.target.files[0]);
+  });
+  coverDropzone.addEventListener('click', (event) => {
+    if (event.target === coverInput || event.target.closest('#coverRemove')) return;
+    coverInput.click();
+  });
+  $('#coverRemove').addEventListener('click', (event) => {
+    event.stopPropagation();
+    removeCover();
+  });
+  ['dragenter', 'dragover'].forEach((type) => {
+    coverDropzone.addEventListener(type, (event) => {
+      event.preventDefault();
+      coverDropzone.classList.add('is-dragover');
+    });
+  });
+  ['dragleave', 'drop'].forEach((type) => {
+    coverDropzone.addEventListener(type, (event) => {
+      event.preventDefault();
+      coverDropzone.classList.remove('is-dragover');
+    });
+  });
+  coverDropzone.addEventListener('drop', (event) => {
+    const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+    if (!file) return;
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    coverInput.files = transfer.files;
+    handleCoverFile(file);
   });
 
   $('#uploadForm').addEventListener('submit', submitUpload);

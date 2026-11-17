@@ -46,6 +46,7 @@ HOST=127.0.0.1
 ADMIN_PASSWORD=<malakas-na-password>
 SESSION_SECRET=<random-64-hex>
 MAX_UPLOAD_MB=2048
+MAX_COVER_MB=8
 SEED_DEMO=false
 ```
 
@@ -134,6 +135,7 @@ sqlite3 /var/www/atech/data/atech.db ".backup '/backup/atech-$(date +%F).db'"
 
 # Installer files
 rsync -a /var/www/atech/storage/installers/ /backup/installers/
+rsync -a /var/www/atech/storage/covers/ /backup/covers/
 ```
 
 O simpleng cron:
@@ -141,7 +143,7 @@ O simpleng cron:
 ```bash
 crontab -e
 # araw-araw 3 AM
-0 3 * * * tar czf /backup/atech-$(date +\%F).tar.gz -C /var/www atech/data atech/storage/installers
+0 3 * * * tar czf /backup/atech-$(date +\%F).tar.gz -C /var/www atech/data atech/storage/installers atech/storage/covers
 ```
 
 ## 11. Update flow

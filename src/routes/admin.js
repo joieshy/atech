@@ -73,6 +73,24 @@ async function unlinkStored(fileName) {
   }
 }
 
+async function unlinkCover(fileName) {
+  if (!fileName) return;
+  const target = path.join(config.coverDir, path.basename(fileName));
+  try {
+    await fs.unlink(target);
+  } catch (error) {
+    if (error.code !== 'ENOENT') console.warn('[admin] hindi ma-delete ang cover:', target, error.message);
+  }
+}
+
+function uploadedFiles(req) {
+  const files = req.files || {};
+  return {
+    installer: Array.isArray(files.file) ? files.file[0] : null,
+    cover: Array.isArray(files.cover) ? files.cover[0] : null
+  };
+}
+
 /* ---------------------------------- auth ---------------------------------- */
 
 router.post('/api/admin/login', loginRateLimit, (req, res) => {
@@ -217,13 +235,18 @@ router.get('/api/admin/overview', requireAdmin, (req, res) => {
 
 /* ------------------------------- installers ------------------------------- */
 
-router.post('/api/admin/installers', requireAdmin, upload.single('file'), (req, res) => {
+router.post('/api/admin/installers', requireAdmin, upload.fields([{ name: 'file', maxCount: 1 }, { name: 'cover', maxCount: 1 }]), (req, res) => {
+  const { installer: installerFile, cover: coverFile } = uploadedFiles(req);
   const fail = (status, message) => {
-    void removeUploadedFile(req.file);
+    void removeUploadedFile(installerFile);
+    void removeUploadedFile(coverFile);
     return res.status(status).json({ error: message });
   };
 
-  if (!req.file) return fail(400, 'Pumili muna ng installer file na i-upload.');
+  if (!installerFile) return fail(400, 'Pumili muna ng installer file na i-upload.');
+  if (coverFile && coverFile.size > config.maxCoverMb * 1024 * 1024) {
+    return fail(400, `Sobrang laki ng cover image. Maximum na ${config.maxCoverMb} MB.`);
+  }
 
   const title = clampText(req.body.title, 120);
   const category = clampText(req.body.category, 40);
@@ -236,16 +259,16 @@ router.post('/api/admin/installers', requireAdmin, upload.single('file'), (req, 
 
   const now = new Date().toISOString();
   const slug = uniqueSlug(db, req.body.slug || title);
-  const meta = fileMeta(req.file);
+  const meta = fileMeta(installerFile);
 
   const info = db
     .prepare(
       `INSERT INTO installers (
          slug, title, category, version, description, file_name, original_name,
-         file_size, file_ext, downloads, featured, published, is_demo, created_at, updated_at
+         file_size, file_ext, cover_name, downloads, featured, published, is_demo, created_at, updated_at
        ) VALUES (
          @slug, @title, @category, @version, @description, @file_name, @original_name,
-         @file_size, @file_ext, 0, @featured, @published, 0, @now, @now
+         @file_size, @file_ext, @cover_name, 0, @featured, @published, 0, @now, @now
        )`
     )
     .run({
@@ -255,6 +278,7 @@ router.post('/api/admin/installers', requireAdmin, upload.single('file'), (req, 
       version,
       description,
       ...meta,
+      cover_name: coverFile ? coverFile.filename : null,
       featured: toBool(req.body.featured) ? 1 : 0,
       published: toBool(req.body.published, true) ? 1 : 0,
       now
@@ -263,12 +287,22 @@ router.post('/api/admin/installers', requireAdmin, upload.single('file'), (req, 
   return res.status(201).json({ installer: toAdminInstaller(readInstaller(info.lastInsertRowid)) });
 });
 
-router.patch('/api/admin/installers/:id', requireAdmin, upload.single('file'), async (req, res) => {
+router.patch('/api/admin/installers/:id', requireAdmin, upload.fields([{ name: 'file', maxCount: 1 }, { name: 'cover', maxCount: 1 }]), async (req, res) => {
+  const { installer: installerFile, cover: coverFile } = uploadedFiles(req);
+  const cleanup = () => {
+    void removeUploadedFile(installerFile);
+    void removeUploadedFile(coverFile);
+  };
+
   const id = Number(req.params.id);
   const existing = Number.isInteger(id) ? readInstaller(id) : null;
   if (!existing) {
-    void removeUploadedFile(req.file);
+    cleanup();
     return res.status(404).json({ error: 'Hindi mahanap ang installer na ito.' });
+  }
+  if (coverFile && coverFile.size > config.maxCoverMb * 1024 * 1024) {
+    cleanup();
+    return res.status(400).json({ error: `Sobrang laki ng cover image. Maximum na ${config.maxCoverMb} MB.` });
   }
 
   const updates = { updated_at: new Date().toISOString() };
@@ -277,7 +311,7 @@ router.patch('/api/admin/installers/:id', requireAdmin, upload.single('file'), a
   if (body.title !== undefined) {
     const title = clampText(body.title, 120);
     if (title.length < 3) {
-      void removeUploadedFile(req.file);
+      cleanup();
       return res.status(400).json({ error: 'Masyadong maikli ang pangalan ng installer.' });
     }
     updates.title = title;
@@ -286,7 +320,7 @@ router.patch('/api/admin/installers/:id', requireAdmin, upload.single('file'), a
   if (body.category !== undefined) {
     const category = clampText(body.category, 40);
     if (!categoryExists(category)) {
-      void removeUploadedFile(req.file);
+      cleanup();
       return res.status(400).json({ error: 'Pumili ng tamang category.' });
     }
     updates.category = category;
@@ -301,21 +335,36 @@ router.patch('/api/admin/installers/:id', requireAdmin, upload.single('file'), a
     updates.slug = uniqueSlug(db, body.slug, id);
   }
 
-  let uploadedMeta = null;
-  if (req.file) {
-    uploadedMeta = fileMeta(req.file);
-    Object.assign(updates, uploadedMeta);
+  let uploadedInstallerMeta = null;
+  if (installerFile) {
+    uploadedInstallerMeta = fileMeta(installerFile);
+    Object.assign(updates, uploadedInstallerMeta);
     // Kapag pinalitan ang file ng demo entry, ituring na itong totoong installer.
     if (existing.is_demo) updates.is_demo = 0;
     if (!updates.slug && !existing.slug) updates.slug = uniqueSlug(db, existing.title, id);
   }
 
+  const removeCover = toBool(body.removeCover);
+  if (coverFile) {
+    updates.cover_name = coverFile.filename;
+  } else if (removeCover) {
+    updates.cover_name = null;
+  }
+
   const keys = Object.keys(updates);
   const assignments = keys.map((key) => `${key} = @${key}`).join(', ');
-  db.prepare(`UPDATE installers SET ${assignments} WHERE id = @id`).run({ ...updates, id });
+  try {
+    db.prepare(`UPDATE installers SET ${assignments} WHERE id = @id`).run({ ...updates, id });
+  } catch (error) {
+    cleanup();
+    throw error;
+  }
 
-  if (uploadedMeta && existing.file_name) {
+  if (uploadedInstallerMeta && existing.file_name) {
     await unlinkStored(existing.file_name);
+  }
+  if ((coverFile || removeCover) && existing.cover_name) {
+    await unlinkCover(existing.cover_name);
   }
 
   return res.json({ installer: toAdminInstaller(readInstaller(id)) });
@@ -328,6 +377,7 @@ router.delete('/api/admin/installers/:id', requireAdmin, async (req, res) => {
 
   db.prepare('DELETE FROM installers WHERE id = ?').run(id);
   await unlinkStored(existing.file_name);
+  await unlinkCover(existing.cover_name);
   return res.json({ ok: true });
 });
 
@@ -341,6 +391,7 @@ router.get('/api/admin/settings', requireAdmin, (req, res) => {
     settings,
     categories: db.prepare('SELECT slug, name, color, icon FROM categories ORDER BY sort ASC').all(),
     maxUploadMb: config.maxUploadMb,
+    maxCoverMb: config.maxCoverMb,
     runtime: `Node ${process.version}`
   });
 });
