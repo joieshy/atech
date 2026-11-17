@@ -16,7 +16,8 @@ const ICONS = {
   alert: '<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>',
   upload: '<path d="M12 19V5m0 0-6 6m6-6 6 6M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
   eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
-  eyeOff: '<path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c6.5 0 10 8 10 8a17.6 17.6 0 0 1-2.16 3.19M6.61 6.61A17.7 17.7 0 0 0 2 12s3.5 8 10 8a9.7 9.7 0 0 0 5.39-1.61"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="m2 2 20 20"/>'
+  eyeOff: '<path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c6.5 0 10 8 10 8a17.6 17.6 0 0 1-2.16 3.19M6.61 6.61A17.7 17.7 0 0 0 2 12s3.5 8 10 8a9.7 9.7 0 0 0 5.39-1.61"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="m2 2 20 20"/>',
+  refresh: '<path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/>'
 };
 
 const state = {
@@ -25,6 +26,9 @@ const state = {
   settings: {},
   overview: null,
   sessions: [],
+  downloads: [],
+  downloadTotal: 0,
+  downloadVisitors: 0,
   maxUploadMb: 2048,
   maxCoverMb: 8,
   coverMode: 'none',
@@ -34,6 +38,7 @@ const state = {
   filters: { q: '', category: 'all', status: 'all' },
   editing: null,
   pendingDelete: null,
+  confirmAction: 'delete',
   uploading: false,
   settingsLoaded: false
 };
@@ -155,10 +160,11 @@ async function showDashboard() {
 
 async function loadData() {
   try {
-    const [overview, list, settings] = await Promise.all([
+    const [overview, list, settings, downloads] = await Promise.all([
       api('/api/admin/overview'),
       api('/api/admin/installers'),
-      api('/api/admin/settings')
+      api('/api/admin/settings'),
+      api('/api/admin/downloads?limit=50')
     ]);
     state.overview = overview;
     state.installers = list.installers || [];
@@ -166,6 +172,7 @@ async function loadData() {
     state.categories = settings.categories || [];
     state.maxUploadMb = settings.maxUploadMb || 2048;
     state.maxCoverMb = settings.maxCoverMb || 8;
+    applyDownloads(downloads);
 
     renderStats();
     renderChart();
@@ -176,6 +183,7 @@ async function loadData() {
     renderNavCount();
     renderCategoryOptions();
     fillSettingsForm();
+    renderDownloads();
     $('#infoMaxUpload').textContent = `${state.maxUploadMb} MB`;
     $('#infoMaxCover').textContent = `${state.maxCoverMb} MB`;
     $('#infoNode').textContent = settings.runtime || 'Node.js';
@@ -339,6 +347,60 @@ function renderTop() {
     item.title = entry.title;
     list.append(item);
   });
+}
+
+/* ----------------------------- download monitor --------------------------- */
+
+function applyDownloads(data) {
+  state.downloads = (data && data.downloads) || [];
+  state.downloadTotal = Number(data && data.total) || 0;
+  state.downloadVisitors = Number(data && data.visitors) || 0;
+}
+
+async function loadDownloads() {
+  try {
+    applyDownloads(await api('/api/admin/downloads?limit=50'));
+  } catch (error) {
+    state.downloads = [];
+    state.downloadTotal = 0;
+    state.downloadVisitors = 0;
+    if (error.status === 401) handleApiError(error);
+  }
+  renderDownloads();
+}
+
+function renderDownloads() {
+  const list = $('#downloadMonitorList');
+  const count = $('#downloadMonitorCount');
+  if (!list) return;
+
+  list.textContent = '';
+  if (count) {
+    count.textContent = state.downloadTotal
+      ? `${numberFormat.format(state.downloadTotal)} dl · ${numberFormat.format(state.downloadVisitors)} device${state.downloadVisitors === 1 ? '' : 's'}`
+      : 'wala pa';
+  }
+
+  if (state.downloads.length === 0) {
+    list.append(el('li', 'list-empty', 'Wala pang download. I-share ang bagong installer mo para lumabas dito ang mga kukuha nito.'));
+    return;
+  }
+
+  for (const entry of state.downloads) {
+    const item = el('li', 'session-item');
+    item.append(el('span', 'session-dot'));
+
+    const body = el('div', 'session-body');
+    const title = `${entry.title}${entry.version ? ` · v${entry.version}` : ''}`;
+    body.append(
+      el('strong', null, title),
+      el('span', null, `${timeAgo(entry.at)} · ${deviceLabel(entry.userAgent)}`),
+      el('span', 'session-ua', entry.fingerprint ? `fingerprint ${entry.fingerprint}` : 'anonymous download')
+    );
+
+    item.append(body, el('span', 'session-tag', entry.fileType || 'FILE'));
+    list.append(item);
+  }
 }
 
 /* -------------------------------- table ----------------------------------- */
@@ -580,7 +642,10 @@ function switchView(view) {
   $('#viewSubtitle').textContent = VIEW_META[view].subtitle;
   document.title = `${VIEW_META[view].title} — ATECH Admin`;
 
-  if (view === 'settings' && !state.settingsLoaded) fillSettingsForm();
+  if (view === 'settings') {
+    if (!state.settingsLoaded) fillSettingsForm();
+    void loadDownloads();
+  }
   closeSidebar();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -906,24 +971,54 @@ async function submitUpload(event) {
 
 /* --------------------------------- delete --------------------------------- */
 
-function openConfirm(item) {
-  state.pendingDelete = item;
-  $('#confirmText').textContent = `Mabubura ang "${item.title}" at ang file nito (${formatBytes(item.fileSize)}). Hindi na ito maibabalik.`;
+function setConfirm({ title, text, label, action }) {
+  state.confirmAction = action;
+  $('#confirmTitle').textContent = title;
+  $('#confirmText').textContent = text;
+  $('#confirmIcon').innerHTML = icon(action === 'delete' ? 'trash' : 'refresh');
+  $('#confirmActionBtn').textContent = label;
   $('#confirmModal').hidden = false;
   document.body.style.overflow = 'hidden';
-  setTimeout(() => $('#confirmDeleteBtn').focus(), 100);
+  setTimeout(() => $('#confirmActionBtn').focus(), 100);
+}
+
+function openConfirm(item) {
+  state.pendingDelete = item;
+  setConfirm({
+    title: 'Delete installer?',
+    text: `Mabubura ang "${item.title}" at ang file nito (${formatBytes(item.fileSize)}). Hindi na ito maibabalik.`,
+    label: 'Oo, i-delete',
+    action: 'delete'
+  });
+}
+
+function openResetDownloads() {
+  state.pendingDelete = null;
+  setConfirm({
+    title: 'I-reset ang download stats?',
+    text: 'Mabubura ang lahat ng download counter at download history. Pagkatapos ng reset, ang mga bagong download lang ang makikita sa monitor — magandang gawin bago mo i-announce ang bagong version.',
+    label: 'Oo, i-reset',
+    action: 'reset-downloads'
+  });
 }
 
 function closeConfirm() {
   $('#confirmModal').hidden = true;
   state.pendingDelete = null;
+  state.confirmAction = 'delete';
   if ($('#uploadModal').hidden) document.body.style.overflow = '';
+}
+
+function runConfirmAction() {
+  if (state.confirmAction === 'reset-downloads') return resetDownloads();
+  return deleteInstaller();
 }
 
 async function deleteInstaller() {
   const item = state.pendingDelete;
   if (!item) return;
-  const button = $('#confirmDeleteBtn');
+  const button = $('#confirmActionBtn');
+  const label = button.textContent;
   button.disabled = true;
   button.textContent = 'Binubura...';
 
@@ -936,7 +1031,30 @@ async function deleteInstaller() {
     handleApiError(error);
   } finally {
     button.disabled = false;
-    button.textContent = 'Oo, i-delete';
+    button.textContent = label;
+  }
+}
+
+async function resetDownloads() {
+  const button = $('#confirmActionBtn');
+  const label = button.textContent;
+  button.disabled = true;
+  button.textContent = 'Nire-reset...';
+
+  try {
+    const result = await api('/api/admin/downloads/reset', { method: 'POST' });
+    closeConfirm();
+    toast(
+      result.log
+        ? `Na-reset ang ${numberFormat.format(result.log)} download record. Ang mga bago lang ang lalabas dito.`
+        : 'Wala pang download record na ni-reset. Zero na ang lahat ng counter.'
+    );
+    await Promise.all([refreshData(), loadDownloads()]);
+  } catch (error) {
+    handleApiError(error);
+  } finally {
+    button.disabled = false;
+    button.textContent = label;
   }
 }
 
@@ -1152,6 +1270,7 @@ function bindEvents() {
   $('#settingsForm').addEventListener('submit', saveSettings);
   $('#passwordForm').addEventListener('submit', changePassword);
   $('#revokeOtherSessions').addEventListener('click', revokeOtherSessions);
+  $('#resetDownloadsBtn').addEventListener('click', openResetDownloads);
 
   $('#adminSearch').addEventListener('input', (event) => {
     state.filters.q = event.target.value;
@@ -1232,7 +1351,7 @@ function bindEvents() {
 
   $$('[data-close-upload]').forEach((node) => node.addEventListener('click', closeUploadModal));
   $$('[data-close-confirm]').forEach((node) => node.addEventListener('click', closeConfirm));
-  $('#confirmDeleteBtn').addEventListener('click', deleteInstaller);
+  $('#confirmActionBtn').addEventListener('click', runConfirmAction);
 
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;

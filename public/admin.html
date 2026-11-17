@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/admin.css?v=20261117h">
+  <link rel="stylesheet" href="/assets/css/admin.css?v=20261117i">
 </head>
 <body class="admin-body">
   <div class="admin-grid-bg" aria-hidden="true"></div>
@@ -449,6 +449,21 @@
               <section class="panel info-panel">
                 <div class="panel-head">
                   <div>
+                    <h2>Download monitor</h2>
+                    <p>Mga bagong download pagkatapos ng reset</p>
+                  </div>
+                  <span class="panel-chip" id="downloadMonitorCount">—</span>
+                </div>
+                <ul class="session-list" id="downloadMonitorList"></ul>
+                <div class="form-actions">
+                  <button class="btn btn--outline btn--sm" type="button" id="resetDownloadsBtn">I-reset ang download stats</button>
+                </div>
+                <p class="info-text">I-reset ito bago i-announce ang bagong version para malinaw kung sino ang nag-download ng bago. Fingerprint lang ang nakikita — hindi ang totoong IP.</p>
+              </section>
+
+              <section class="panel info-panel">
+                <div class="panel-head">
+                  <div>
                     <h2>Admin password</h2>
                     <p>Palitan ang login password</p>
                   </div>
@@ -621,20 +636,20 @@
   <div class="modal" id="confirmModal" hidden>
     <div class="modal-backdrop" data-close-confirm></div>
     <div class="modal-card modal-card--sm" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
-      <span class="confirm-icon">
+      <span class="confirm-icon" id="confirmIcon">
         <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m3 0-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
       </span>
       <h2 id="confirmTitle">Delete installer?</h2>
       <p id="confirmText">Permanenteng mabubura ang file at ang record nito. Hindi na ito maibabalik.</p>
       <div class="confirm-actions">
         <button class="btn btn--outline" type="button" data-close-confirm>Cancel</button>
-        <button class="btn btn--danger" type="button" id="confirmDeleteBtn">Oo, i-delete</button>
+        <button class="btn btn--danger" type="button" id="confirmActionBtn">Oo, i-delete</button>
       </div>
     </div>
   </div>
 
   <div class="toast-stack" id="toastStack" aria-live="polite"></div>
 
-  <script src="/assets/js/admin.js?v=20261117h" defer></script>
+  <script src="/assets/js/admin.js?v=20261117i" defer></script>
 </body>
 </html>

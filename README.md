@@ -7,7 +7,7 @@ Public download site + web admin para sa mga installer ng **PisoWiFi**, **PisoNe
 ## Ano ang kasama
 
 - **Public site** (`/`) - hero, categories, search, filter, sort, details modal, download counter, cover images at social links.
-- **Web admin** (`/admin`) — split-screen login page, overview dashboard na may 7-day download chart, installer table, upload/edit/delete, publish/draft toggle at site settings.
+- **Web admin** (`/admin`) — split-screen login page, overview dashboard na may 7-day download chart, installer table, upload/edit/delete, publish/draft toggle at site settings. May **download monitor** at **reset download stats** sa Settings para makita agad ang mga bagong download pagkatapos mag-release ng bagong version.
 - **SQLite database** — `data/atech.db`, awtomatikong ginagawa sa first run. Walang MySQL/Postgres na kailangan.
 - **Direct downloads** — `/download/:slug` ang nag-stream ng file mula sa `storage/installers/` at nagbibilang ng downloads.
 - **Security basics** — HttpOnly signed session cookie, password check, login rate limit, CSP headers, file type whitelist at upload size limit. May **Change password** form sa admin Settings.
@@ -137,7 +137,10 @@ Naka-seed na: `pisowifi`, `pisonet`, `others`. Para magdagdag o mag-rename, i-ed
 | POST | `/api/admin/installers` | Upload (multipart) |
 | PATCH | `/api/admin/installers/:id` | Edit / publish / replace file |
 | DELETE | `/api/admin/installers/:id` | Delete record + file |
-| GET/PUT | `/api/admin/settings` | Site settings |
+| GET | `/api/admin/settings` | Site settings |
+| PUT | `/api/admin/settings` | I-save ang site settings |
+| GET | `/api/admin/downloads?limit=` | Recent downloads (monitor) |
+| POST | `/api/admin/downloads/reset` | I-reset ang download counters at history |
 | GET | `/healthz` | Health check |
 
 ## Deploy sa VPS

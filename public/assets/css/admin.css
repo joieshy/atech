@@ -1888,6 +1888,21 @@ select option {
   padding: 14px 0;
 }
 
+#downloadMonitorList {
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+#downloadMonitorList::-webkit-scrollbar {
+  width: 6px;
+}
+
+#downloadMonitorList::-webkit-scrollbar-thumb {
+  background: rgba(148, 177, 232, 0.18);
+  border-radius: 999px;
+}
+
 /* -------------------------------- dropzone -------------------------------- */
 
 .dropzone {

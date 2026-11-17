@@ -234,6 +234,55 @@ router.get('/api/admin/overview', requireAdmin, (req, res) => {
   });
 });
 
+/* -------------------------------- downloads ------------------------------- */
+
+router.get('/api/admin/downloads', requireAdmin, (req, res) => {
+  const limit = Math.min(Math.max(Number(req.query.limit) || 50, 1), 200);
+  const rows = db
+    .prepare(
+      `SELECT d.id, d.created_at AS at, d.user_agent, d.ip_hash,
+              i.title, i.slug, i.version, i.file_ext
+       FROM download_log d JOIN installers i ON i.id = d.installer_id
+       ORDER BY d.id DESC LIMIT ?`
+    )
+    .all(limit);
+  const totals = db
+    .prepare('SELECT COUNT(*) AS total, COUNT(DISTINCT ip_hash) AS visitors FROM download_log')
+    .get();
+
+  res.set('Cache-Control', 'no-store');
+  res.json({
+    total: totals.total || 0,
+    visitors: totals.visitors || 0,
+    downloads: rows.map((row) => ({
+      id: row.id,
+      at: row.at,
+      title: row.title,
+      slug: row.slug,
+      version: row.version || '',
+      fileType: row.file_ext ? row.file_ext.replace('.', '').toUpperCase() : 'FILE',
+      userAgent: String(row.user_agent || '').slice(0, 300),
+      fingerprint: row.ip_hash ? row.ip_hash.slice(0, 10) : null
+    }))
+  });
+});
+
+// Binubura ang download history at ibinabalik sa 0 ang lahat ng counter.
+// Ginagamit ito bago i-announce ang bagong version para malinaw kung sino
+// ang nag-download ng bago.
+router.post('/api/admin/downloads/reset', requireAdmin, (req, res) => {
+  const reset = db.transaction(() => {
+    const log = db.prepare('DELETE FROM download_log').run().changes;
+    const installers = db.prepare('UPDATE installers SET downloads = 0 WHERE downloads != 0').run().changes;
+    return { log, installers };
+  });
+  const result = reset();
+  console.log(
+    `[admin] Na-reset ang download stats: ${result.log} log entries, ${result.installers} installers.`
+  );
+  res.json({ ok: true, ...result });
+});
+
 /* ------------------------------- installers ------------------------------- */
 
 router.post('/api/admin/installers', requireAdmin, upload.fields([{ name: 'file', maxCount: 1 }, { name: 'cover', maxCount: 1 }]), (req, res) => {
