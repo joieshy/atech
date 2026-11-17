@@ -24,6 +24,7 @@ const state = {
   categories: [],
   settings: {},
   overview: null,
+  sessions: [],
   maxUploadMb: 2048,
   activeView: 'overview',
   filters: { q: '', category: 'all', status: 'all' },
@@ -84,7 +85,11 @@ function timeAgo(isoString) {
 }
 
 async function api(path, options = {}) {
-  const headers = { Accept: 'application/json', ...(options.headers || {}) };
+  const headers = {
+    Accept: 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
+    ...(options.headers || {})
+  };
   let body = options.body;
   if (body !== undefined && body !== null && !(body instanceof FormData) && typeof body !== 'string') {
     body = JSON.stringify(body);
@@ -168,6 +173,7 @@ async function loadData() {
     fillSettingsForm();
     $('#infoMaxUpload').textContent = `${state.maxUploadMb} MB`;
     $('#infoNode').textContent = settings.runtime || 'Node.js';
+    await loadSessions();
   } catch (error) {
     handleApiError(error);
   }
@@ -669,6 +675,7 @@ function uploadWithProgress(url, method, formData, onProgress) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open(method, url);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.responseType = 'json';
 
     xhr.upload.addEventListener('progress', (event) => {
@@ -855,6 +862,7 @@ async function changePassword(event) {
     });
     form.reset();
     toast('Napalitan ang password ng admin.');
+    await loadSessions();
   } catch (error) {
     if (error.status === 401) {
       handleApiError(error);
@@ -863,6 +871,80 @@ async function changePassword(event) {
     }
   } finally {
     button.disabled = false;
+    button.textContent = label;
+  }
+}
+
+/* ------------------------------ active sessions ---------------------------- */
+
+function deviceLabel(userAgent = '') {
+  if (/android/i.test(userAgent)) return 'Android device';
+  if (/iphone|ipad|ipod/i.test(userAgent)) return 'iPhone / iPad';
+  if (/windows/i.test(userAgent)) return 'Windows PC';
+  if (/macintosh|mac os/i.test(userAgent)) return 'Mac';
+  if (/linux/i.test(userAgent)) return 'Linux device';
+  return 'Unknown device';
+}
+
+async function loadSessions() {
+  try {
+    const data = await api('/api/admin/sessions');
+    state.sessions = data.sessions || [];
+  } catch (error) {
+    state.sessions = [];
+    if (error.status === 401) handleApiError(error);
+  }
+  renderSessions();
+}
+
+function renderSessions() {
+  const list = $('#sessionList');
+  const count = $('#sessionCount');
+  const button = $('#revokeOtherSessions');
+  if (!list || !count || !button) return;
+
+  list.textContent = '';
+  count.textContent = `${state.sessions.length} active`;
+  button.disabled = state.sessions.length < 2;
+
+  if (state.sessions.length === 0) {
+    list.append(el('li', 'list-empty', 'Walang active session.'));
+    return;
+  }
+
+  for (const session of state.sessions) {
+    const item = el('li', `session-item${session.current ? ' is-current' : ''}`);
+    item.append(el('span', 'session-dot'));
+
+    const body = el('div', 'session-body');
+    body.append(
+      el('strong', null, session.current ? 'This device' : deviceLabel(session.userAgent)),
+      el('span', null, `Huling aktibo: ${timeAgo(session.lastSeenAt)}`),
+      el('span', 'session-ua', session.userAgent || 'Unknown device')
+    );
+
+    item.append(body);
+    if (session.current) item.append(el('span', 'session-tag', 'current'));
+    list.append(item);
+  }
+}
+
+async function revokeOtherSessions() {
+  const button = $('#revokeOtherSessions');
+  if (!button || button.disabled) return;
+
+  const label = button.textContent;
+  button.disabled = true;
+  button.textContent = 'Naglo-logout...';
+
+  try {
+    const result = await api('/api/admin/sessions/revoke-others', { method: 'POST' });
+    toast(result.revoked ? `Na-logout ang ${result.revoked} other session(s).` : 'Walang ibang session.');
+    await loadSessions();
+  } catch (error) {
+    handleApiError(error);
+    button.disabled = false;
+  } finally {
     button.textContent = label;
   }
 }
@@ -956,6 +1038,7 @@ function bindEvents() {
 
   $('#settingsForm').addEventListener('submit', saveSettings);
   $('#passwordForm').addEventListener('submit', changePassword);
+  $('#revokeOtherSessions').addEventListener('click', revokeOtherSessions);
 
   $('#adminSearch').addEventListener('input', (event) => {
     state.filters.q = event.target.value;

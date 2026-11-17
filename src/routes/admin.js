@@ -10,9 +10,14 @@ const { slugify, uniqueSlug, toAdminInstaller, clampText } = require('../utils')
 const {
   requireAdmin,
   isAuthenticated,
+  requireCsrf,
   verifyPassword,
-  setSessionCookie,
+  createSessionCookie,
   clearSessionCookie,
+  destroySession,
+  destroyAllSessions,
+  destroyOtherSessions,
+  listSessions,
   loginRateLimit,
   clearLoginAttempts,
   passwordChangeRateLimit,
@@ -20,6 +25,10 @@ const {
 } = require('../auth');
 
 const router = express.Router();
+
+// Lahat ng state-changing admin requests ay kailangan ng custom header
+// (ginagawa ito ng admin frontend) para mapigilan ang CSRF.
+router.use('/api/admin', requireCsrf);
 
 const ALLOWED_SETTINGS = new Set([
   'site_name',
@@ -72,11 +81,12 @@ router.post('/api/admin/login', loginRateLimit, (req, res) => {
     return res.status(401).json({ error: 'Mali ang password. Subukan ulit.' });
   }
   clearLoginAttempts(req.ip);
-  setSessionCookie(req, res);
+  createSessionCookie(req, res);
   return res.json({ ok: true });
 });
 
 router.post('/api/admin/logout', (req, res) => {
+  destroySession(req);
   clearSessionCookie(req, res);
   res.json({ ok: true });
 });
@@ -117,13 +127,24 @@ router.post('/api/admin/change-password', requireAdmin, passwordChangeRateLimit,
   }
 
   clearPasswordChangeAttempts(req.ip);
-  setSessionCookie(req, res);
+  destroyAllSessions();
+  createSessionCookie(req, res);
   return res.json({ ok: true });
 });
 
 router.get('/api/admin/session', (req, res) => {
   res.set('Cache-Control', 'no-store');
   res.json({ authenticated: isAuthenticated(req) });
+});
+
+router.get('/api/admin/sessions', requireAdmin, (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.json({ sessions: listSessions(req) });
+});
+
+router.post('/api/admin/sessions/revoke-others', requireAdmin, (req, res) => {
+  const revoked = destroyOtherSessions(req);
+  res.json({ ok: true, revoked });
 });
 
 /* -------------------------------- overview -------------------------------- */

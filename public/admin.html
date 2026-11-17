@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/admin.css?v=20261117a">
+  <link rel="stylesheet" href="/assets/css/admin.css?v=20261117f">
 </head>
 <body class="admin-body">
   <div class="admin-grid-bg" aria-hidden="true"></div>
@@ -475,6 +475,20 @@
                   <span class="security-badge"><i></i> Login rate limit</span>
                 </div>
               </section>
+
+              <section class="panel info-panel">
+                <div class="panel-head">
+                  <div>
+                    <h2>Active sessions</h2>
+                    <p>Mga device na naka-login</p>
+                  </div>
+                  <span class="panel-chip" id="sessionCount">—</span>
+                </div>
+                <ul class="session-list" id="sessionList"></ul>
+                <div class="form-actions">
+                  <button class="btn btn--outline btn--sm" type="button" id="revokeOtherSessions" disabled>I-logout ang ibang devices</button>
+                </div>
+              </section>
             </div>
           </div>
         </section>
@@ -595,6 +609,6 @@
 
   <div class="toast-stack" id="toastStack" aria-live="polite"></div>
 
-  <script src="/assets/js/admin.js?v=20261117a" defer></script>
+  <script src="/assets/js/admin.js?v=20261117f" defer></script>
 </body>
 </html>

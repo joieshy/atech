@@ -2,6 +2,7 @@
 
 const crypto = require('crypto');
 const { config } = require('./config');
+const { db } = require('./db');
 
 const COOKIE_NAME = 'atech_admin';
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
@@ -23,54 +24,84 @@ function parseCookies(header) {
   return cookies;
 }
 
-function sign(value) {
-  return crypto.createHmac('sha256', config.sessionSecret).update(value).digest('base64url');
-}
-
-/**
- * Naka-base sa password ang version ng session. Kapag pinalitan ang
- * password, automatic na ma-invalidate ang lahat ng lumang session.
- */
-function passwordVersion() {
-  return crypto
-    .createHmac('sha256', config.sessionSecret)
-    .update(config.adminPassword)
-    .digest('base64url')
-    .slice(0, 16);
-}
-
-function createToken() {
-  const payload = Buffer.from(
-    JSON.stringify({ exp: Date.now() + SESSION_TTL_MS, v: passwordVersion() })
-  ).toString('base64url');
-  return `${payload}.${sign(payload)}`;
-}
-
-function verifyToken(token) {
-  if (typeof token !== 'string') return false;
-  const [payload, signature] = token.split('.');
-  if (!payload || !signature) return false;
-
-  const expected = sign(payload);
-  const given = Buffer.from(signature);
-  const wanted = Buffer.from(expected);
-  if (given.length !== wanted.length || !crypto.timingSafeEqual(given, wanted)) return false;
-
-  try {
-    const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
-    return typeof data.exp === 'number' && data.exp > Date.now() && data.v === passwordVersion();
-  } catch {
-    return false;
-  }
-}
-
 function isHttps(req) {
   return Boolean(req.secure || String(req.headers['x-forwarded-proto'] || '').startsWith('https'));
 }
 
-function setSessionCookie(req, res) {
+/* ------------------------------- sessions -------------------------------- */
+
+function hashToken(token) {
+  return crypto.createHash('sha256').update(token).digest('hex');
+}
+
+function hashIp(ip) {
+  return crypto
+    .createHmac('sha256', config.sessionSecret)
+    .update(String(ip || ''))
+    .digest('hex')
+    .slice(0, 32);
+}
+
+function createSession(req) {
+  const token = crypto.randomBytes(32).toString('base64url');
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + SESSION_TTL_MS);
+
+  db.prepare(
+    `INSERT INTO sessions (token_hash, created_at, last_seen_at, expires_at, ip_hash, user_agent)
+     VALUES (?, ?, ?, ?, ?, ?)`
+  ).run(
+    hashToken(token),
+    now.toISOString(),
+    now.toISOString(),
+    expiresAt.toISOString(),
+    hashIp(req.ip),
+    String(req.headers['user-agent'] || '').slice(0, 300)
+  );
+
+  // Huwag hayaang dumami ang expired/old sessions.
+  db.prepare('DELETE FROM sessions WHERE expires_at <= ?').run(now.toISOString());
+
+  return token;
+}
+
+function getSessionToken(req) {
+  return parseCookies(req.headers.cookie)[COOKIE_NAME] || null;
+}
+
+function getSessionFromToken(token) {
+  if (!token || typeof token !== 'string' || token.length > 200) return null;
+
+  const session = db.prepare('SELECT * FROM sessions WHERE token_hash = ?').get(hashToken(token));
+  if (!session) return null;
+
+  if (new Date(session.expires_at).getTime() <= Date.now()) {
+    db.prepare('DELETE FROM sessions WHERE token_hash = ?').run(session.token_hash);
+    return null;
+  }
+
+  return session;
+}
+
+function getSession(req) {
+  return getSessionFromToken(getSessionToken(req));
+}
+
+function touchSession(session) {
+  if (!session) return session;
+  if (Date.now() - new Date(session.last_seen_at).getTime() > 60 * 1000) {
+    session.last_seen_at = new Date().toISOString();
+    db.prepare('UPDATE sessions SET last_seen_at = ? WHERE token_hash = ?').run(
+      session.last_seen_at,
+      session.token_hash
+    );
+  }
+  return session;
+}
+
+function setSessionCookie(req, res, token) {
   const parts = [
-    `${COOKIE_NAME}=${createToken()}`,
+    `${COOKIE_NAME}=${token}`,
     'Path=/',
     'HttpOnly',
     'SameSite=Lax',
@@ -80,20 +111,84 @@ function setSessionCookie(req, res) {
   res.append('Set-Cookie', parts.join('; '));
 }
 
+function createSessionCookie(req, res) {
+  const token = createSession(req);
+  setSessionCookie(req, res, token);
+  return token;
+}
+
 function clearSessionCookie(req, res) {
   const parts = [`${COOKIE_NAME}=`, 'Path=/', 'HttpOnly', 'SameSite=Lax', 'Max-Age=0'];
   if (isHttps(req)) parts.push('Secure');
   res.append('Set-Cookie', parts.join('; '));
 }
 
+function destroySession(req) {
+  const token = getSessionToken(req);
+  if (token) {
+    db.prepare('DELETE FROM sessions WHERE token_hash = ?').run(hashToken(token));
+  }
+}
+
+function destroyAllSessions() {
+  db.prepare('DELETE FROM sessions').run();
+}
+
+function destroyOtherSessions(req) {
+  const token = getSessionToken(req);
+  if (!token) return 0;
+  return db.prepare('DELETE FROM sessions WHERE token_hash != ?').run(hashToken(token)).changes;
+}
+
+function listSessions(req) {
+  const token = getSessionToken(req);
+  const currentHash = token ? hashToken(token) : null;
+
+  return db
+    .prepare(
+      `SELECT token_hash, created_at, last_seen_at, expires_at, ip_hash, user_agent
+       FROM sessions WHERE expires_at > ?
+       ORDER BY last_seen_at DESC`
+    )
+    .all(new Date().toISOString())
+    .map((session) => ({
+      current: session.token_hash === currentHash,
+      createdAt: session.created_at,
+      lastSeenAt: session.last_seen_at,
+      expiresAt: session.expires_at,
+      ipHash: session.ip_hash ? session.ip_hash.slice(0, 12) : null,
+      userAgent: session.user_agent || ''
+    }));
+}
+
 function isAuthenticated(req) {
-  const cookies = parseCookies(req.headers.cookie);
-  return verifyToken(cookies[COOKIE_NAME]);
+  const session = getSession(req);
+  if (!session) return false;
+  touchSession(session);
+  return true;
 }
 
 function requireAdmin(req, res, next) {
-  if (!isAuthenticated(req)) {
+  const session = getSession(req);
+  if (!session) {
     return res.status(401).json({ error: 'Kailangan mong mag-login bilang admin.' });
+  }
+  touchSession(session);
+  req.adminSession = session;
+  return next();
+}
+
+/**
+ * CSRF hardening: lahat ng state-changing admin requests ay dapat galing
+ * sa fetch/XHR ng site (custom header). Hindi kayang i-set ito ng simpleng
+ * cross-site form.
+ */
+function requireCsrf(req, res, next) {
+  if (
+    ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) &&
+    req.get('X-Requested-With') !== 'XMLHttpRequest'
+  ) {
+    return res.status(403).json({ error: 'Invalid request.' });
   }
   return next();
 }
@@ -175,13 +270,23 @@ const sweeper = setInterval(() => {
 }, 60 * 1000);
 sweeper.unref();
 
+const sessionSweeper = setInterval(() => {
+  db.prepare('DELETE FROM sessions WHERE expires_at <= ?').run(new Date().toISOString());
+}, 30 * 60 * 1000);
+sessionSweeper.unref();
+
 module.exports = {
   COOKIE_NAME,
   isAuthenticated,
   requireAdmin,
+  requireCsrf,
   verifyPassword,
-  setSessionCookie,
+  createSessionCookie,
   clearSessionCookie,
+  destroySession,
+  destroyAllSessions,
+  destroyOtherSessions,
+  listSessions,
   loginRateLimit,
   clearLoginAttempts,
   passwordChangeRateLimit,

@@ -146,6 +146,17 @@ Tingnan ang **[DEPLOY.md](DEPLOY.md)** para sa step-by-step (Ubuntu + Nginx + sy
 - Walang user accounts ang public site; download lang ang kaya nilang gawin.
 - Kung magpapa-public ka, siguraduhing malakas ang `ADMIN_PASSWORD` at naka-HTTPS ang admin.
 
+## Security
+
+- **HTTPS** sa domain (Let's Encrypt) at HSTS header kapag naka-HTTPS.
+- **Admin auth**: password + opaque, database-backed session cookie. `HttpOnly`, `SameSite=Lax`, `Secure` kapag HTTPS, 12-hour expiry. Naka-hash (SHA-256) lang ang session token sa database.
+- **Login rate limit** (10 attempts / 15 min) at **change-password limit** (8 / 15 min).
+- **CSRF guard**: lahat ng state-changing admin requests ay kailangan ng `X-Requested-With: XMLHttpRequest` header.
+- **Session control**: makikita sa Settings → Active sessions; pwedeng i-logout ang ibang devices. Pag pinalitan ang password, lahat ng sessions maliban sa kasalukuyan ay revoked.
+- **CSP**, `X-Frame-Options`, `nosniff`, Referrer-Policy; prepared SQLite statements; upload extension whitelist; files sa labas ng public web root.
+
+Walang website na 100% unhackable. Para sa mas mahigpit na setup: gumamit ng malakas at unique admin password, i-update regularly ang OS/dependencies, gumawa ng backups, at huwag i-share ang `/admin` link.
+
 ## License
 
 Proprietary — tingnan ang [LICENSE](LICENSE). Ang website code, design at content ay hindi pwedeng i-reuse o ibenta nang walang pahintulot. Ang installer files ay ibinibigay “as is” para sa personal/shop use; ang third-party software at trademarks ay pag-aari ng kani-kanilang may-ari.

@@ -55,6 +55,16 @@ CREATE TABLE IF NOT EXISTS settings (
   key   TEXT PRIMARY KEY,
   value TEXT NOT NULL DEFAULT ''
 );
+
+CREATE TABLE IF NOT EXISTS sessions (
+  token_hash   TEXT PRIMARY KEY,
+  created_at   TEXT NOT NULL,
+  last_seen_at TEXT NOT NULL,
+  expires_at   TEXT NOT NULL,
+  ip_hash      TEXT,
+  user_agent   TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
 `);
 
 const CATEGORIES = [
