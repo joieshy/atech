@@ -284,6 +284,8 @@ router.patch('/api/admin/installers/:id', requireAdmin, upload.single('file'), a
   if (req.file) {
     uploadedMeta = fileMeta(req.file);
     Object.assign(updates, uploadedMeta);
+    // Kapag pinalitan ang file ng demo entry, ituring na itong totoong installer.
+    if (existing.is_demo) updates.is_demo = 0;
     if (!updates.slug && !existing.slug) updates.slug = uniqueSlug(db, existing.title, id);
   }
 

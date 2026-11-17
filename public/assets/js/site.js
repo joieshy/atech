@@ -329,11 +329,7 @@ function buildInstallerCard(item, index) {
   const badge = el('span', 'badge', category ? category.name : 'Installer');
   top.append(badge);
 
-  if (item.isDemo) {
-    const demo = el('span', 'badge badge--sample', 'sample');
-    demo.style.setProperty('--cat', '#94a3b8');
-    top.append(demo);
-  } else if (item.featured) {
+  if (item.featured) {
     const featured = el('span', 'card-featured');
     featured.innerHTML = `${icon('star')} Featured`;
     top.append(featured);

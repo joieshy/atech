@@ -339,7 +339,6 @@ function filteredInstallers() {
     if (category !== 'all' && item.category !== category) return false;
     if (status === 'published' && !item.published) return false;
     if (status === 'draft' && item.published) return false;
-    if (status === 'demo' && !item.isDemo) return false;
     if (!search) return true;
     return [item.title, item.slug, item.description, item.originalName, item.version]
       .filter(Boolean)
@@ -387,7 +386,7 @@ function renderInstallerTable() {
     const text = el('div', 'cell-text');
     const title = el('strong', null, item.title);
     title.title = item.title;
-    const meta = el('span', null, `${item.isDemo ? 'Sample · ' : ''}${item.originalName || item.slug}${item.version ? ` · v${item.version}` : ''}`);
+    const meta = el('span', null, `${item.originalName || item.slug}${item.version ? ` · v${item.version}` : ''}`);
     meta.title = item.originalName || item.slug;
     text.append(title, meta);
     wrap.append(cellIcon, text);
@@ -406,7 +405,7 @@ function renderInstallerTable() {
     statusBtn.type = 'button';
     statusBtn.title = item.published ? 'I-draft (itago sa site)' : 'I-publish (ipakita sa site)';
     const dot = el('i');
-    statusBtn.append(dot, document.createTextNode(item.isDemo ? 'sample' : item.published ? 'live' : 'draft'));
+    statusBtn.append(dot, document.createTextNode(item.published ? 'live' : 'draft'));
     statusBtn.addEventListener('click', () => togglePublished(item, statusBtn));
     cellStatus.append(statusBtn);
 
