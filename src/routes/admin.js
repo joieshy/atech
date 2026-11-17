@@ -37,7 +37,8 @@ const ALLOWED_SETTINGS = new Set([
   'facebook_url',
   'telegram_url',
   'youtube_url',
-  'contact_email'
+  'contact_email',
+  'contact_phone'
 ]);
 
 function toBool(value, fallback = false) {

@@ -482,12 +482,14 @@ function renderSocials() {
     { key: 'mail', label: 'Email', href: socials.email ? `mailto:${socials.email}` : '' }
   ].filter((entry) => entry.href);
 
+  const hasPhone = Boolean(phoneHref(socials.phone));
+
   for (const containerId of ['#socials', '#footerSocials']) {
     const container = $(containerId);
     if (!container) continue;
     container.textContent = '';
     if (entries.length === 0) {
-      container.append(el('span', 'footer-note', 'Idadagdag pa lang ang social links.'));
+      if (!hasPhone) container.append(el('span', 'footer-note', 'Idadagdag pa lang ang social links.'));
       continue;
     }
     for (const entry of entries) {
@@ -501,6 +503,48 @@ function renderSocials() {
       container.append(link);
     }
   }
+
+  renderContactPhone();
+}
+
+function phoneDigits(value) {
+  return String(value || '').replace(/\D/g, '');
+}
+
+function phoneHref(value) {
+  const digits = phoneDigits(value);
+  if (!digits) return '';
+  if (digits.startsWith('0')) return `tel:+63${digits.slice(1)}`;
+  if (digits.startsWith('63')) return `tel:+${digits}`;
+  return `tel:+${digits}`;
+}
+
+function formatPhone(value) {
+  const digits = phoneDigits(value);
+  if (digits.length === 11 && digits.startsWith('09')) {
+    return `${digits.slice(0, 4)} ${digits.slice(4, 7)} ${digits.slice(7)}`;
+  }
+  if (digits.length === 12 && digits.startsWith('639')) {
+    return `0${digits.slice(2, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`;
+  }
+  return String(value || '').trim();
+}
+
+function renderContactPhone() {
+  const link = $('#footerPhone');
+  if (!link) return;
+  const phone = (state.site && state.site.socials && state.site.socials.phone) || '';
+  const href = phoneHref(phone);
+  if (!href) {
+    link.hidden = true;
+    return;
+  }
+  const label = formatPhone(phone);
+  link.hidden = false;
+  link.href = href;
+  link.setAttribute('aria-label', `Tumawag o mag-text sa ${label}`);
+  const text = link.querySelector('span');
+  if (text) text.textContent = label;
 }
 
 /* --------------------------------- helpers -------------------------------- */

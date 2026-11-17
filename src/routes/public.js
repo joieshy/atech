@@ -52,7 +52,8 @@ router.get('/api/site', (req, res) => {
         facebook: settings.facebook_url || '',
         telegram: settings.telegram_url || '',
         youtube: settings.youtube_url || '',
-        email: settings.contact_email || ''
+        email: settings.contact_email || '',
+        phone: settings.contact_phone || ''
       }
     },
     stats: {

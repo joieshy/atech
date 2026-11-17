@@ -109,7 +109,8 @@ const SETTINGS = {
   facebook_url: '',
   telegram_url: '',
   youtube_url: '',
-  contact_email: ''
+  contact_email: '',
+  contact_phone: '09760614294'
 };
 
 const buildCategory = db.prepare(`
