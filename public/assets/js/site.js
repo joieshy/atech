@@ -581,6 +581,17 @@ function bindStaticEvents() {
   const searchInput = $('#searchInput');
   searchInput.addEventListener('input', (event) => scheduleSearch(event.target.value));
 
+  const headerSearch = $('#headerSearch');
+  if (headerSearch) {
+    headerSearch.addEventListener('click', () => {
+      $('#installers').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.setTimeout(() => {
+        searchInput.focus({ preventScroll: true });
+        searchInput.select();
+      }, 480);
+    });
+  }
+
   $('#sortSelect').addEventListener('change', (event) => {
     state.sort = event.target.value;
     updateClearButton();

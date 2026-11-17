@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=20261117f">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=20261117g">
 </head>
 <body>
   <a class="skip-link" href="#installers">Lumaktaw sa installers</a>
@@ -36,11 +36,19 @@
         <span class="brand-text">ATECH<span class="brand-dot">.</span></span>
       </a>
 
-      <nav class="main-nav" id="mainNav" aria-label="Main navigation">
-        <a href="#installers">Installers</a>
-        <a href="#categories" hidden>Categories</a>
-        <a href="#guide">Paano</a>
-      </nav>
+      <div class="header-center">
+        <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+          <a href="#installers">Installers</a>
+          <a href="#categories" hidden>Categories</a>
+          <a href="#guide">Paano</a>
+          <a href="#contact">Kontak</a>
+        </nav>
+        <button class="header-search" id="headerSearch" type="button" aria-label="Hanapin ang installer">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <span class="header-search-text">Hanapin</span>
+          <kbd aria-hidden="true">/</kbd>
+        </button>
+      </div>
 
       <div class="header-actions">
         <div class="header-cats" role="group" aria-label="Browse installers by category">
@@ -317,6 +325,6 @@
     <span id="toastText"></span>
   </div>
 
-  <script src="/assets/js/site.js?v=20261117i" defer></script>
+  <script src="/assets/js/site.js?v=20261117j" defer></script>
 </body>
 </html>
