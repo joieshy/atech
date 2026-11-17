@@ -20,6 +20,10 @@ APP_PORT="3040"
 APP_USER="joieshy"
 APP_DIR="/home/joieshy/atech"
 
+# Sundin ang MAX_UPLOAD_MB ng app para pareho ang Nginx at Node limits.
+APP_MAX_MB="$(grep -E '^MAX_UPLOAD_MB=' "$APP_DIR/.env" 2>/dev/null | head -1 | cut -d= -f2- || true)"
+APP_MAX_MB="${APP_MAX_MB:-2048}"
+
 if [ "$(id -u)" -ne 0 ]; then
   echo "Patakbuhin gamit ang sudo:"
   echo "  sudo bash deploy/setup-https.sh"
@@ -101,7 +105,7 @@ server {
     ssl_session_cache shared:SSL:10m;
     ssl_session_timeout 1d;
 
-    client_max_body_size 2048M;
+    client_max_body_size ${APP_MAX_MB}M;
     client_body_timeout 3600s;
 
     # Security headers (the app also sets its own)
