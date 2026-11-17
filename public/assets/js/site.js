@@ -99,6 +99,7 @@ async function init() {
     renderStats();
     renderCategories();
     renderFilters();
+    syncHeaderCategories();
     renderInstallers(state.installers);
     renderSocials();
   } catch (error) {
@@ -197,6 +198,14 @@ function syncCategoryCards() {
   });
 }
 
+function syncHeaderCategories() {
+  document.querySelectorAll('[data-header-category]').forEach((button) => {
+    const active = button.dataset.headerCategory === state.category;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+}
+
 /* --------------------------------- filters -------------------------------- */
 
 function renderFilters() {
@@ -234,6 +243,7 @@ function setCategory(slug) {
   document.querySelectorAll('#categoryChips .chip').forEach((chip) => {
     chip.classList.toggle('is-active', chip.dataset.category === slug);
   });
+  syncHeaderCategories();
   syncCategoryCards();
   updateClearButton();
   loadInstallers();
@@ -294,7 +304,19 @@ function renderInstallers(items) {
 
   if (!items || items.length === 0) {
     empty.hidden = false;
-    $('#resultCount').textContent = '0 installer ang nahanap';
+    const heading = empty.querySelector('h3');
+    const paragraph = empty.querySelector('p');
+    const category = state.categories.find((item) => item.slug === state.category);
+
+    if (category && !state.q) {
+      heading.textContent = `Wala pang installer sa ${category.name}`;
+      paragraph.textContent = `Mag-a-appear dito ang ${category.name} installers kapag may na-upload na.`;
+      $('#resultCount').textContent = `0 ${category.name} installer`;
+    } else {
+      heading.textContent = 'Walang nahanap na installer';
+      paragraph.textContent = 'Subukan ang ibang keyword o category. Baka wala pa lang naka-upload na installer sa category na ito.';
+      $('#resultCount').textContent = '0 installer ang nahanap';
+    }
     return;
   }
 
@@ -526,6 +548,14 @@ function bindStaticEvents() {
     });
   });
 
+  document.querySelectorAll('[data-header-category]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const slug = button.dataset.headerCategory;
+      setCategory(state.category === slug ? 'all' : slug);
+      document.getElementById('installers').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
   const searchInput = $('#searchInput');
   searchInput.addEventListener('input', (event) => scheduleSearch(event.target.value));
 
@@ -584,6 +614,7 @@ function resetFilters() {
   document.querySelectorAll('#categoryChips .chip').forEach((chip) => {
     chip.classList.toggle('is-active', chip.dataset.category === 'all');
   });
+  syncHeaderCategories();
   syncCategoryCards();
   updateClearButton();
   loadInstallers();

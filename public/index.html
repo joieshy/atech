@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=20261117d">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=20261117e">
 </head>
 <body>
   <a class="skip-link" href="#installers">Lumaktaw sa installers</a>
@@ -43,10 +43,16 @@
       </nav>
 
       <div class="header-actions">
-        <a class="btn btn--primary btn--sm hide-sm" href="#installers">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-          Mag-download
-        </a>
+        <div class="header-cats" role="group" aria-label="Browse installers by category">
+          <button class="header-cat header-cat--wifi" type="button" data-header-category="pisowifi" aria-label="PisoWiFi installers" aria-pressed="false" title="PisoWiFi installers">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.55a11 11 0 0 1 14.08 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01M2 8.82a15 15 0 0 1 20 0"/></svg>
+            <span>PisoWiFi</span>
+          </button>
+          <button class="header-cat header-cat--net" type="button" data-header-category="pisonet" aria-label="PisoNet installers" aria-pressed="false" title="PisoNet installers">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span>PisoNet</span>
+          </button>
+        </div>
         <button class="nav-toggle" id="navToggle" aria-label="Buksan ang menu" aria-expanded="false" aria-controls="mainNav">
           <span></span><span></span><span></span>
         </button>
@@ -308,6 +314,6 @@
     <span id="toastText"></span>
   </div>
 
-  <script src="/assets/js/site.js?v=20261117f" defer></script>
+  <script src="/assets/js/site.js?v=20261117g" defer></script>
 </body>
 </html>
