@@ -91,6 +91,7 @@ ATECHWEB/
 ├─ public/
 │  ├─ index.html             # public site
 │  ├─ admin.html             # web admin
+│  ├─ license.html           # License at Terms page
 │  ├─ 404.html
 │  └─ assets/
 │     ├─ css/styles.css
@@ -144,3 +145,9 @@ Tingnan ang **[DEPLOY.md](DEPLOY.md)** para sa step-by-step (Ubuntu + Nginx + sy
 - Ang demo files ay maliliit na ZIP na may README — para lang makita ang download flow. I-delete sa admin bago i-launch publicly.
 - Walang user accounts ang public site; download lang ang kaya nilang gawin.
 - Kung magpapa-public ka, siguraduhing malakas ang `ADMIN_PASSWORD` at naka-HTTPS ang admin.
+
+## License
+
+Proprietary — tingnan ang [LICENSE](LICENSE). Ang website code, design at content ay hindi pwedeng i-reuse o ibenta nang walang pahintulot. Ang installer files ay ibinibigay “as is” para sa personal/shop use; ang third-party software at trademarks ay pag-aari ng kani-kanilang may-ari.
+
+May public na **License at Terms** page sa `/license`, at naka-link ito sa footer ng site.

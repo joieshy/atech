@@ -60,6 +60,10 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(config.root, 'public', 'admin.html'));
 });
 
+app.get('/license', (req, res) => {
+  res.sendFile(path.join(config.root, 'public', 'license.html'));
+});
+
 app.get('/healthz', (req, res) => {
   res.json({ status: 'ok', uptime: Math.round(process.uptime()) });
 });
