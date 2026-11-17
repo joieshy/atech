@@ -75,20 +75,12 @@ const CATEGORIES = [
     sort: 2
   },
   {
-    slug: 'pisotab',
-    name: 'PisoTab',
-    description: 'Tablet-based pisonet, kiosk at piso gaming station software.',
-    color: '#fbbf24',
-    icon: 'tablet',
-    sort: 3
-  },
-  {
     slug: 'others',
     name: 'Iba pa',
     description: 'Drivers, LAN tools, voucher generator at iba pang kailangan sa shop.',
     color: '#94a3b8',
     icon: 'box',
-    sort: 4
+    sort: 3
   }
 ];
 
@@ -158,18 +150,6 @@ const DEMO_INSTALLERS = [
     original: 'PisoNet-Client-v3.8.0.zip',
     downloads: 0,
     created_at: '2026-11-09T13:20:00.000Z'
-  },
-  {
-    slug: 'pisotab-remote-dashboard',
-    title: 'PisoTab Remote Dashboard',
-    category: 'pisotab',
-    version: '1.9.2',
-    description:
-      'Remote monitoring dashboard para sa lahat ng pisotab units mo. Tingnan ang status, remaining time at kita ng bawat station kahit nasa labas ka.',
-    file: 'demo-pisotab-remote-dashboard.zip',
-    original: 'PisoTab-Remote-Dashboard-v1.9.2.zip',
-    downloads: 0,
-    created_at: '2026-10-28T10:05:00.000Z'
   },
   {
     slug: 'voucher-generator-lite',

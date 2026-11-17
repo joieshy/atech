@@ -116,7 +116,7 @@ I-backup ang `data/` at `storage/installers/` para hindi mawala ang files at sta
 
 ## Categories
 
-Naka-seed na: `pisowifi`, `pisonet`, `pisotab`, `others`. Para magdagdag o mag-rename, i-edit ang `CATEGORIES` sa `src/db.js` at i-restart ang server — naka-upsert ito (safe sa existing data).
+Naka-seed na: `pisowifi`, `pisonet`, `others`. Para magdagdag o mag-rename, i-edit ang `CATEGORIES` sa `src/db.js` at i-restart ang server — naka-upsert ito (safe sa existing data).
 
 ## API (para sa integrations)
 
