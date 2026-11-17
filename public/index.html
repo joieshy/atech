@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="fil">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ATECH — Installer Hub para sa PisoWiFi, PisoNet at PisoTab</title>
+  <meta name="description" content="I-download ang mga installer para sa PisoWiFi, PisoNet, PisoTab at iba pang pisonet tools. Libre, updated at ready sa VPS.">
+  <meta name="theme-color" content="#05070d">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#installers">Lumaktaw sa installers</a>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="orb orb--1" aria-hidden="true"></div>
+  <div class="orb orb--2" aria-hidden="true"></div>
+
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a class="brand" href="/" aria-label="ATECH home">
+        <span class="brand-mark">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <defs>
+              <linearGradient id="brandGradient" x1="0" y1="0" x2="1" y2="1">
+                <stop stop-color="#22d3ee"/><stop offset="1" stop-color="#8b5cf6"/>
+              </linearGradient>
+            </defs>
+            <path d="M32 9.5 51 20v23L32 54.5 13 43V20L32 9.5Z" fill="none" stroke="url(#brandGradient)" stroke-width="2.5" opacity=".9"/>
+            <path d="M23 43.5 32 20l9 23.5" fill="none" stroke="url(#brandGradient)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M26.5 36.5h11" stroke="url(#brandGradient)" stroke-width="4.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="brand-text">ATECH<span class="brand-dot">.</span></span>
+      </a>
+
+      <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+        <a href="#installers">Installers</a>
+        <a href="#categories">Categories</a>
+        <a href="#guide">Paano</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="btn btn--ghost btn--sm hide-sm" href="/admin">Admin</a>
+        <button class="nav-toggle" id="navToggle" aria-label="Buksan ang menu" aria-expanded="false" aria-controls="mainNav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="pill">
+            <span class="pulse" aria-hidden="true"></span>
+            <span>Updated</span>
+            <span class="pill-sep">•</span>
+            <span id="heroUpdated">ngayon lang</span>
+          </span>
+          <h1>Mga installer na <span class="grad-text">handa nang i-download.</span></h1>
+          <p class="lede" id="heroDescription">
+            Isang lugar para sa lahat ng installer na kailangan mo para sa pisonet, pisowifi at pisotab business mo. Libreng i-download, updated at ready sa VPS o shop PC.
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn--primary" href="#installers">
+              Tingnan ang installers
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn--outline" href="#guide">Paano mag-install</a>
+          </div>
+          <dl class="hero-stats">
+            <div>
+              <dt id="statInstallers">0</dt>
+              <dd>Installers</dd>
+            </div>
+            <div>
+              <dt id="statDownloads">0</dt>
+              <dd>Downloads</dd>
+            </div>
+            <div>
+              <dt id="statCategories">0</dt>
+              <dd>Categories</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="download-console">
+            <div class="console-head">
+              <span class="console-dots"><i></i><i></i><i></i></span>
+              <span class="console-title">atech://installers</span>
+              <span class="console-live"><i></i>live</span>
+            </div>
+            <div class="console-body" id="consoleRows">
+              <div class="console-skeleton"></div>
+              <div class="console-skeleton"></div>
+              <div class="console-skeleton"></div>
+            </div>
+            <div class="console-foot">
+              <span class="console-foot-label">VPS storage</span>
+              <span class="console-meter"><i></i></span>
+              <span class="console-foot-state">ready</span>
+            </div>
+          </div>
+          <div class="float-chip float-chip--one">
+            <span class="float-chip-icon">
+              <svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01M2 8.82a15 15 0 0 1 20 0"/></svg>
+            </span>
+            <span><strong>PisoWiFi</strong><small>ready to deploy</small></span>
+          </div>
+          <div class="float-chip float-chip--two">
+            <span class="float-chip-icon float-chip-icon--violet">
+              <svg viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+            </span>
+            <span><strong>Fast download</strong><small>direct sa VPS</small></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="categories">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Categories</span>
+            <h2>Para sa bawat setup ng shop mo</h2>
+          </div>
+          <p>Pumili ng category para makita agad ang mga installer na bagay sa business mo.</p>
+        </div>
+        <div class="category-grid" id="categoryGrid">
+          <div class="category-skeleton"></div>
+          <div class="category-skeleton"></div>
+          <div class="category-skeleton"></div>
+          <div class="category-skeleton"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--installers" id="installers">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Downloads</span>
+            <h2>Lahat ng installer, isang lugar lang</h2>
+          </div>
+          <p>Lahat ng file ay naka-host sa ATECH server. I-click ang download at diretso agad sa device mo.</p>
+        </div>
+
+        <div class="toolbar">
+          <div class="search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input type="search" id="searchInput" placeholder="Hanapin ang installer, version..." autocomplete="off" aria-label="Hanapin ang installer">
+            <kbd>/</kbd>
+          </div>
+          <div class="toolbar-right">
+            <div class="chips" id="categoryChips" role="group" aria-label="Filter by category"></div>
+            <label class="select-wrap">
+              <span>Sort</span>
+              <select id="sortSelect" aria-label="Sort installers">
+                <option value="latest">Pinakabago</option>
+                <option value="popular">Pinakasikat</option>
+                <option value="name">A–Z</option>
+                <option value="oldest">Pinakaluma</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="result-info">
+          <span id="resultCount">Naglo-load ng installers...</span>
+          <button class="link-btn" id="clearFilters" type="button" hidden>Clear filters</button>
+        </div>
+
+        <div class="installer-grid" id="installerGrid" aria-live="polite"></div>
+
+        <div class="empty-state" id="emptyState" hidden>
+          <span class="empty-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8m18 0-2.5-4h-13L3 8m18 0H3m6 0v3a3 3 0 0 0 6 0V8"/></svg>
+          </span>
+          <h3>Walang nahanap na installer</h3>
+          <p>Subukan ang ibang keyword o category. Baka wala pa lang naka-upload na installer sa category na ito.</p>
+          <button class="btn btn--outline btn--sm" id="emptyReset" type="button">Ipakita lahat</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="guide">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Paano</span>
+            <h2>Tatlong hakbang lang</h2>
+          </div>
+          <p>Walang mahirap. Pili, download, install — gamit ang phone o computer mo.</p>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <span class="step-number">01</span>
+            <h3>Pumili ng installer</h3>
+            <p>Hanapin ayon sa category o gamitin ang search box para mabilis mahanap ang tamang version.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">02</span>
+            <h3>I-download ang file</h3>
+            <p>I-click ang download button. Deretso ang file galing sa ATECH server papunta sa device mo.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">03</span>
+            <h3>I-install at i-setup</h3>
+            <p>Buksan ang file at sundan ang setup guide. Para sa APK, payagan ang install from unknown sources.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container faq-grid">
+        <div class="faq-intro">
+          <span class="eyebrow">FAQ</span>
+          <h2>Mga madalas itanong</h2>
+          <p>May tanong ka pa? I-message lang kami sa Facebook o Telegram.</p>
+          <div class="socials" id="socials"></div>
+        </div>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary>Libre ba ang mga installer?<span class="faq-plus"></span></summary>
+            <div class="faq-body"><p>Oo, libreng i-download ang lahat ng installer dito. Kung may kailangan kang custom setup, pwede kang mag-message sa amin gamit ang social links.</p></div>
+          </details>
+          <details class="faq-item">
+            <summary>Paano i-install ang APK na file?<span class="faq-plus"></span></summary>
+            <div class="faq-body"><p>Buksan ang Settings ng Android device, pumunta sa Apps → Special access → Install unknown apps, tapos payagan ang browser o file manager na ginamit mo. Pagkatapos, i-tap ang na-download na APK para mag-install.</p></div>
+          </details>
+          <details class="faq-item">
+            <summary>Saan naka-host ang mga file?<span class="faq-plus"></span></summary>
+            <div class="faq-body"><p>Nasa ATECH VPS ang lahat ng installer, kaya direct at mabilis ang download. Hindi kailangan ng third-party file host o waiting time.</p></div>
+          </details>
+          <details class="faq-item">
+            <summary>Safe ba ang mga installer?<span class="faq-plus"></span></summary>
+            <div class="faq-body"><p>Bawat file ay ina-upload at sinusuri ng admin bago i-publish. Paalala lang: i-download lang dito sa official ATECH site at i-scan ang file kung galing sa ibang source.</p></div>
+          </details>
+          <details class="faq-item">
+            <summary>Paano ako makakahingi ng bagong installer?<span class="faq-plus"></span></summary>
+            <div class="faq-body"><p>I-message lang kami sa Facebook o Telegram. Sabihin ang pangalan ng software at version na kailangan mo, at ia-upload namin kapag available na.</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="cta-banner">
+          <div>
+            <h2>May bago kang installer?</h2>
+            <p>I-upload sa admin panel para makita agad ng mga bisita. Metadata, category at file — isang form lang.</p>
+          </div>
+          <a class="btn btn--primary" href="/admin">
+            Pumunta sa Admin
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/">
+          <span class="brand-mark">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <defs>
+                <linearGradient id="footerGradient" x1="0" y1="0" x2="1" y2="1">
+                  <stop stop-color="#22d3ee"/><stop offset="1" stop-color="#8b5cf6"/>
+                </linearGradient>
+              </defs>
+              <path d="M32 9.5 51 20v23L32 54.5 13 43V20L32 9.5Z" fill="none" stroke="url(#footerGradient)" stroke-width="2.5" opacity=".9"/>
+              <path d="M23 43.5 32 20l9 23.5" fill="none" stroke="url(#footerGradient)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M26.5 36.5h11" stroke="url(#footerGradient)" stroke-width="4.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="brand-text">ATECH<span class="brand-dot">.</span></span>
+        </a>
+        <p>Installer hub para sa PisoWiFi, PisoNet at PisoTab. Mabilis, malinis at laging updated.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Site</h4>
+        <a href="#installers">Installers</a>
+        <a href="#categories">Categories</a>
+        <a href="#guide">Paano mag-install</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="footer-links">
+        <h4>Admin</h4>
+        <a href="/admin">Admin panel</a>
+        <a href="/healthz">Server status</a>
+      </div>
+      <div class="footer-social">
+        <h4>Kontakin kami</h4>
+        <div class="socials" id="footerSocials"></div>
+        <p class="footer-note">Para sa requests at support, message lang sa socials.</p>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <span>© <span id="year">2026</span> ATECH. Para sa personal at shop use.</span>
+      <span class="footer-server"><i></i> Served from ATECH VPS</span>
+    </div>
+  </footer>
+
+  <div class="modal" id="installerModal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" type="button" data-close-modal aria-label="Isara">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <div class="modal-head">
+        <span class="installer-icon" id="modalIcon"></span>
+        <div class="modal-titles">
+          <span class="badge" id="modalCategory"></span>
+          <h3 id="modalTitle"></h3>
+          <span class="modal-version" id="modalVersion"></span>
+        </div>
+      </div>
+      <p class="modal-description" id="modalDescription"></p>
+      <dl class="modal-meta" id="modalMeta"></dl>
+      <div class="modal-actions">
+        <a class="btn btn--primary" id="modalDownload" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          I-download
+        </a>
+        <button class="btn btn--outline" id="modalCopy" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          Copy link
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4.5 4.5L19 7"/></svg>
+    <span id="toastText"></span>
+  </div>
+
+  <script src="/assets/js/site.js" defer></script>
+</body>
+</html>

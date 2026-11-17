@@ -1,0 +1,17 @@
+[Unit]
+Description=ATECH installer hub
+After=network.target
+
+[Service]
+Type=simple
+User=atech
+WorkingDirectory=/var/www/atech
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+# Kung gumagamit ka ng nvm, palitan ang ExecStart ng absolute path ng node:
+# ExecStart=/home/atech/.nvm/versions/node/v24.0.0/bin/node server.js
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="fil">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin — ATECH</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#05070d">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+<body class="admin-body">
+  <div class="admin-grid-bg" aria-hidden="true"></div>
+  <div class="admin-orb admin-orb--one" aria-hidden="true"></div>
+  <div class="admin-orb admin-orb--two" aria-hidden="true"></div>
+
+  <!-- ============================== LOGIN VIEW ============================== -->
+  <section class="login-view" id="loginView" hidden>
+    <div class="login-shell">
+      <aside class="login-brand">
+        <div class="login-brand-top">
+          <a class="brand" href="/">
+            <span class="brand-mark">
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <defs>
+                  <linearGradient id="loginBrandGradient" x1="0" y1="0" x2="1" y2="1">
+                    <stop stop-color="#22d3ee"/><stop offset="1" stop-color="#8b5cf6"/>
+                  </linearGradient>
+                </defs>
+                <path d="M32 9.5 51 20v23L32 54.5 13 43V20L32 9.5Z" fill="none" stroke="url(#loginBrandGradient)" stroke-width="2.5" opacity=".9"/>
+                <path d="M23 43.5 32 20l9 23.5" fill="none" stroke="url(#loginBrandGradient)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M26.5 36.5h11" stroke="url(#loginBrandGradient)" stroke-width="4.5" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span class="brand-text">ATECH<span class="brand-dot">.</span></span>
+          </a>
+          <span class="login-tag">Admin</span>
+        </div>
+
+        <div class="login-brand-copy">
+          <span class="login-eyebrow"><i></i> Control center</span>
+          <h1>Pamahalaan ang<br><span class="grad-text">lahat ng installer.</span></h1>
+          <p>Isang dashboard para sa pag-upload, pag-edit at pag-monitor ng downloads ng PisoWiFi, PisoNet at PisoTab files mo.</p>
+          <ul class="login-features">
+            <li>
+              <span class="feature-check">
+                <svg viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 7"/></svg>
+              </span>
+              <span><strong>Direct upload sa VPS</strong><small>Hanggang 2 GB bawat installer file</small></span>
+            </li>
+            <li>
+              <span class="feature-check">
+                <svg viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 7"/></svg>
+              </span>
+              <span><strong>Download analytics</strong><small>Bilang ng downloads at 7-day trend</small></span>
+            </li>
+            <li>
+              <span class="feature-check">
+                <svg viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 7"/></svg>
+              </span>
+              <span><strong>Publish o draft</strong><small>Ikaw ang magdedesisyon kung visible sa site</small></span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="login-brand-foot">
+          <span class="status-dot"><i></i> Server online</span>
+          <span>ATECH Installer Hub</span>
+        </div>
+      </aside>
+
+      <main class="login-panel">
+        <div class="login-card">
+          <div class="login-card-head">
+            <span class="login-lock">
+              <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 15v2"/></svg>
+            </span>
+            <h2>Admin access</h2>
+            <p>Ilagay ang admin password para makapasok sa dashboard.</p>
+          </div>
+
+          <form class="login-form" id="loginForm" autocomplete="on" novalidate>
+            <label class="field">
+              <span class="field-label">Password</span>
+              <span class="input-with-action">
+                <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                <input type="password" id="loginPassword" name="password" placeholder="••••••••••••" autocomplete="current-password" required>
+                <button class="reveal-btn" type="button" id="togglePassword" aria-label="Ipakita ang password" aria-pressed="false">
+                  <svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </span>
+            </label>
+
+            <div class="form-error" id="loginError" hidden>
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+              <span id="loginErrorText"></span>
+            </div>
+
+            <button class="btn btn--primary btn--block" type="submit" id="loginBtn">
+              <span>Mag-login</span>
+              <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </form>
+
+          <div class="login-help">
+            <p>Nalimutan ang password? Nasa <code>.env</code> file ng server ang <code>ADMIN_PASSWORD</code>. Palitan ito at i-restart ang app.</p>
+          </div>
+
+          <a class="login-back" href="/">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+            Bumalik sa site
+          </a>
+        </div>
+
+        <p class="login-legal">© <span id="loginYear">2026</span> ATECH · Admin area. Hindi pampublikong page.</p>
+      </main>
+    </div>
+  </section>
+
+  <!-- =============================== APP VIEW =============================== -->
+  <div class="admin-app" id="appView" hidden>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head">
+        <a class="brand" href="/">
+          <span class="brand-mark">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <defs>
+                <linearGradient id="sideBrandGradient" x1="0" y1="0" x2="1" y2="1">
+                  <stop stop-color="#22d3ee"/><stop offset="1" stop-color="#8b5cf6"/>
+                </linearGradient>
+              </defs>
+              <path d="M32 9.5 51 20v23L32 54.5 13 43V20L32 9.5Z" fill="none" stroke="url(#sideBrandGradient)" stroke-width="2.5" opacity=".9"/>
+              <path d="M23 43.5 32 20l9 23.5" fill="none" stroke="url(#sideBrandGradient)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M26.5 36.5h11" stroke="url(#sideBrandGradient)" stroke-width="4.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="brand-text">ATECH<span class="brand-dot">.</span></span>
+        </a>
+        <span class="sidebar-chip">admin</span>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Admin navigation">
+        <span class="sidebar-label">Workspace</span>
+        <button class="nav-item is-active" type="button" data-view="overview">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+          <span>Overview</span>
+        </button>
+        <button class="nav-item" type="button" data-view="installers">
+          <svg viewBox="0 0 24 24"><path d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8m18 0-2.5-4h-13L3 8m18 0H3m6 0v3a3 3 0 0 0 6 0V8"/></svg>
+          <span>Installers</span>
+          <span class="nav-count" id="navInstallerCount">0</span>
+        </button>
+        <button class="nav-item" type="button" data-view="settings">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.2.6.76 1 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="storage-card">
+          <div class="storage-head">
+            <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>
+            <span>Storage</span>
+          </div>
+          <strong id="storageUsed">0 MB</strong>
+          <small>kabuuan ng installer files</small>
+        </div>
+        <a class="sidebar-link" href="/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M14 3h7v7M21 3l-9 9"/><path d="M19 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6"/></svg>
+          Tingnan ang site
+        </a>
+        <button class="sidebar-link" type="button" id="logoutBtn">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg>
+          Mag-logout
+        </button>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" hidden></div>
+
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <button class="icon-btn menu-btn" type="button" id="menuBtn" aria-label="Buksan ang menu">
+          <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="topbar-titles">
+          <span class="topbar-eyebrow">Admin panel</span>
+          <h1 id="viewTitle">Overview</h1>
+          <p id="viewSubtitle">Mga numero ng site mo ngayon.</p>
+        </div>
+        <div class="topbar-actions">
+          <a class="btn btn--outline btn--sm hide-mobile" href="/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M14 3h7v7M21 3l-9 9"/><path d="M19 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6"/></svg>
+            View site
+          </a>
+          <button class="btn btn--primary btn--sm" type="button" id="newUploadBtn">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            New upload
+          </button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <!-- ----------------------------- OVERVIEW ----------------------------- -->
+        <section class="view is-active" data-view-panel="overview">
+          <div class="stat-grid">
+            <article class="stat-card">
+              <div class="stat-top">
+                <span class="stat-icon stat-icon--cyan">
+                  <svg viewBox="0 0 24 24"><path d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8m18 0-2.5-4h-13L3 8m18 0H3m6 0v3a3 3 0 0 0 6 0V8"/></svg>
+                </span>
+                <span class="stat-tag" id="statPublishedTag">0 live</span>
+              </div>
+              <strong class="stat-value" id="statTotal">0</strong>
+              <span class="stat-label">Kabuuang installers</span>
+              <div class="stat-foot"><span id="statDrafts">0 draft</span><span class="stat-spark">all files</span></div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-top">
+                <span class="stat-icon stat-icon--violet">
+                  <svg viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                </span>
+                <span class="stat-tag stat-tag--green" id="statDailyTag">+0 ngayon</span>
+              </div>
+              <strong class="stat-value" id="statDownloads">0</strong>
+              <span class="stat-label">Kabuuang downloads</span>
+              <div class="stat-foot"><span>all time</span><span class="stat-spark">downloads</span></div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-top">
+                <span class="stat-icon stat-icon--amber">
+                  <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>
+                </span>
+                <span class="stat-tag" id="statStorageTag">VPS</span>
+              </div>
+              <strong class="stat-value" id="statStorage">0 MB</strong>
+              <span class="stat-label">Storage na gamit</span>
+              <div class="stat-foot"><span id="statFileCount">0 files</span><span class="stat-spark">/storage</span></div>
+            </article>
+
+            <article class="stat-card">
+              <div class="stat-top">
+                <span class="stat-icon stat-icon--green">
+                  <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg>
+                </span>
+                <span class="stat-tag stat-tag--green">7 days</span>
+              </div>
+              <strong class="stat-value" id="statWeek">0</strong>
+              <span class="stat-label">Downloads ngayong linggo</span>
+              <div class="stat-foot"><span>rolling window</span><span class="stat-spark">trend</span></div>
+            </article>
+          </div>
+
+          <div class="overview-grid">
+            <section class="panel chart-panel">
+              <div class="panel-head">
+                <div>
+                  <h2>Downloads</h2>
+                  <p>Huling 7 araw</p>
+                </div>
+                <span class="panel-chip" id="chartTotal">0 total</span>
+              </div>
+              <div class="chart" id="downloadChart"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>By category</h2>
+                  <p>Distribution ng files</p>
+                </div>
+              </div>
+              <ul class="breakdown" id="categoryBreakdown"></ul>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>Recent downloads</h2>
+                  <p>Huling activity sa site</p>
+                </div>
+              </div>
+              <ul class="activity" id="recentList"></ul>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>Top installers</h2>
+                  <p>Pinakamaraming download</p>
+                </div>
+              </div>
+              <ol class="top-list" id="topList"></ol>
+            </section>
+          </div>
+
+          <div class="quick-actions">
+            <div>
+              <h2>Ready na mag-upload?</h2>
+              <p>Magdagdag ng bagong installer file at agad itong lalabas sa public site kapag published.</p>
+            </div>
+            <div class="quick-actions-btns">
+              <button class="btn btn--primary btn--sm" type="button" id="quickUploadBtn">
+                <svg viewBox="0 0 24 24"><path d="M12 19V5m0 0-6 6m6-6 6 6"/></svg>
+                Mag-upload ng installer
+              </button>
+              <button class="btn btn--outline btn--sm" type="button" data-go-view="installers">Manage installers</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------------------------- INSTALLERS ---------------------------- -->
+        <section class="view" data-view-panel="installers">
+          <div class="panel">
+            <div class="panel-head panel-head--wrap">
+              <div>
+                <h2>Lahat ng installers</h2>
+                <p id="tableCount">0 files</p>
+              </div>
+              <div class="table-tools">
+                <div class="search">
+                  <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                  <input type="search" id="adminSearch" placeholder="Hanapin ang installer..." autocomplete="off" aria-label="Hanapin ang installer">
+                </div>
+                <select id="adminCategoryFilter" class="select" aria-label="Filter by category">
+                  <option value="all">Lahat ng category</option>
+                </select>
+                <select id="adminStatusFilter" class="select" aria-label="Filter by status">
+                  <option value="all">Lahat ng status</option>
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                  <option value="demo">Sample</option>
+                </select>
+                <button class="btn btn--primary btn--sm" type="button" id="tableUploadBtn">
+                  <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                  Upload
+                </button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Installer</th>
+                    <th>Category</th>
+                    <th>Size</th>
+                    <th>Downloads</th>
+                    <th>Status</th>
+                    <th>Updated</th>
+                    <th class="th-actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="installerRows"></tbody>
+              </table>
+            </div>
+
+            <div class="empty-state empty-state--sm" id="installersEmpty" hidden>
+              <span class="empty-icon">
+                <svg viewBox="0 0 24 24"><path d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8m18 0-2.5-4h-13L3 8m18 0H3m6 0v3a3 3 0 0 0 6 0V8"/></svg>
+              </span>
+              <h3>Walang installer na nahanap</h3>
+              <p>Subukan ang ibang filter, o mag-upload ng bagong installer.</p>
+              <button class="btn btn--outline btn--sm" type="button" id="emptyUploadBtn">Mag-upload</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ----------------------------- SETTINGS ----------------------------- -->
+        <section class="view" data-view-panel="settings">
+          <div class="settings-grid">
+            <form class="panel settings-form" id="settingsForm">
+              <div class="panel-head">
+                <div>
+                  <h2>Site settings</h2>
+                  <p>Ito ang nakikita ng mga bisita sa public site.</p>
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <label class="field">
+                  <span class="field-label">Site name</span>
+                  <input type="text" name="site_name" maxlength="40" placeholder="ATECH">
+                </label>
+                <label class="field">
+                  <span class="field-label">Tagline</span>
+                  <input type="text" name="tagline" maxlength="120" placeholder="Installer Hub para sa PisoWiFi, PisoNet at PisoTab">
+                </label>
+                <label class="field field--full">
+                  <span class="field-label">Site description</span>
+                  <textarea name="site_description" rows="4" maxlength="500" placeholder="Ipaliwanag sa bisita kung ano ang ATECH..."></textarea>
+                  <span class="field-hint">Lalabas ito sa hero section ng homepage.</span>
+                </label>
+                <label class="field">
+                  <span class="field-label">Facebook URL</span>
+                  <input type="url" name="facebook_url" maxlength="300" placeholder="https://facebook.com/yourpage">
+                </label>
+                <label class="field">
+                  <span class="field-label">Telegram URL</span>
+                  <input type="url" name="telegram_url" maxlength="300" placeholder="https://t.me/yourchannel">
+                </label>
+                <label class="field">
+                  <span class="field-label">YouTube URL</span>
+                  <input type="url" name="youtube_url" maxlength="300" placeholder="https://youtube.com/@yourchannel">
+                </label>
+                <label class="field">
+                  <span class="field-label">Contact email</span>
+                  <input type="email" name="contact_email" maxlength="120" placeholder="support@atech.ph">
+                </label>
+              </div>
+
+              <div class="form-error" id="settingsError" hidden>
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+                <span></span>
+              </div>
+
+              <div class="form-actions">
+                <button class="btn btn--primary" type="submit" id="saveSettingsBtn">I-save ang settings</button>
+                <span class="form-note">Naka-save sa SQLite database.</span>
+              </div>
+            </form>
+
+            <div class="settings-side">
+              <section class="panel info-panel">
+                <div class="panel-head">
+                  <div>
+                    <h2>Server info</h2>
+                    <p>Deployment details</p>
+                  </div>
+                </div>
+                <dl class="info-list">
+                  <div><dt>Max upload size</dt><dd id="infoMaxUpload">2 GB</dd></div>
+                  <div><dt>Database</dt><dd>SQLite (data/atech.db)</dd></div>
+                  <div><dt>File storage</dt><dd>storage/installers</dd></div>
+                  <div><dt>Node runtime</dt><dd id="infoNode">—</dd></div>
+                </dl>
+              </section>
+
+              <section class="panel info-panel">
+                <div class="panel-head">
+                  <div>
+                    <h2>Security</h2>
+                    <p>Admin access</p>
+                  </div>
+                </div>
+                <p class="info-text">Nasa server lang ang password, hindi ito naka-save sa database. Para palitan, i-edit ang <code>ADMIN_PASSWORD</code> sa <code>.env</code> at i-restart ang app.</p>
+                <div class="security-row">
+                  <span class="security-badge"><i></i> HttpOnly session</span>
+                  <span class="security-badge"><i></i> Login rate limit</span>
+                </div>
+              </section>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ UPLOAD MODAL ============================= -->
+  <div class="modal" id="uploadModal" hidden>
+    <div class="modal-backdrop" data-close-upload></div>
+    <div class="modal-card modal-card--wide" role="dialog" aria-modal="true" aria-labelledby="uploadModalTitle">
+      <button class="modal-close" type="button" data-close-upload aria-label="Isara">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+
+      <div class="modal-head">
+        <span class="modal-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 19V5m0 0-6 6m6-6 6 6"/></svg>
+        </span>
+        <div>
+          <h2 id="uploadModalTitle">Bagong installer</h2>
+          <p id="uploadModalSubtitle">I-upload ang file at punan ang details.</p>
+        </div>
+      </div>
+
+      <form id="uploadForm" novalidate>
+        <label class="dropzone" id="dropzone" for="fileInput">
+          <input type="file" id="fileInput" name="file" hidden>
+          <span class="dropzone-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          </span>
+          <strong id="dropzoneTitle">I-drop ang installer dito</strong>
+          <span id="dropzoneHint">o i-click para pumili ng file · APK, EXE, ZIP, RAR, ISO</span>
+          <span class="dropzone-file" id="dropzoneFile" hidden></span>
+        </label>
+
+        <div class="upload-progress" id="uploadProgress" hidden>
+          <div class="upload-bar"><i id="uploadBar"></i></div>
+          <span id="uploadPercent">0%</span>
+        </div>
+
+        <div class="form-grid form-grid--modal">
+          <label class="field field--full">
+            <span class="field-label">Pangalan ng installer <b>*</b></span>
+            <input type="text" id="fieldTitle" name="title" maxlength="120" placeholder="Hal. PisoWiFi Vendo Suite" required>
+          </label>
+
+          <label class="field">
+            <span class="field-label">Category <b>*</b></span>
+            <select id="fieldCategory" name="category" required>
+              <option value="">Pumili ng category</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span class="field-label">Version</span>
+            <input type="text" id="fieldVersion" name="version" maxlength="40" placeholder="Hal. 4.2.1">
+          </label>
+
+          <label class="field field--full">
+            <span class="field-label">Description</span>
+            <textarea id="fieldDescription" name="description" rows="4" maxlength="1200" placeholder="Ano ang ginagawa ng installer, requirements at notes..."></textarea>
+          </label>
+
+          <label class="field">
+            <span class="field-label">Custom slug <span class="field-optional">optional</span></span>
+            <input type="text" id="fieldSlug" name="slug" maxlength="64" placeholder="auto-generated mula sa title">
+          </label>
+
+          <div class="field">
+            <span class="field-label">Visibility</span>
+            <div class="toggle-row">
+              <label class="switch">
+                <input type="checkbox" id="fieldPublished" name="published" checked>
+                <span class="switch-track"></span>
+                <span>Published</span>
+              </label>
+              <label class="switch">
+                <input type="checkbox" id="fieldFeatured" name="featured">
+                <span class="switch-track"></span>
+                <span>Featured</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-error" id="uploadError" hidden>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+          <span></span>
+        </div>
+
+        <div class="form-actions form-actions--modal">
+          <button class="btn btn--outline" type="button" data-close-upload>Cancel</button>
+          <button class="btn btn--primary" type="submit" id="uploadSubmit">
+            <svg viewBox="0 0 24 24"><path d="M12 19V5m0 0-6 6m6-6 6 6"/></svg>
+            <span>I-upload</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================ CONFIRM MODAL ============================ -->
+  <div class="modal" id="confirmModal" hidden>
+    <div class="modal-backdrop" data-close-confirm></div>
+    <div class="modal-card modal-card--sm" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <span class="confirm-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m3 0-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+      </span>
+      <h2 id="confirmTitle">Delete installer?</h2>
+      <p id="confirmText">Permanenteng mabubura ang file at ang record nito. Hindi na ito maibabalik.</p>
+      <div class="confirm-actions">
+        <button class="btn btn--outline" type="button" data-close-confirm>Cancel</button>
+        <button class="btn btn--danger" type="button" id="confirmDeleteBtn">Oo, i-delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+  <script src="/assets/js/admin.js" defer></script>
+</body>
+</html>
