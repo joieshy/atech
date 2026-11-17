@@ -76,6 +76,10 @@ function categoryFor(slug) {
   return state.categories.find((category) => category.slug === slug) || null;
 }
 
+function visibleCategories() {
+  return state.categories.filter((category) => Number(category.installers) > 0);
+}
+
 /* ------------------------------- bootstrapping ---------------------------- */
 
 document.addEventListener('DOMContentLoaded', init);
@@ -141,14 +145,20 @@ function animateNumber(node, target) {
 
 function renderCategories() {
   const grid = $('#categoryGrid');
+  const section = document.getElementById('categories');
+  const links = document.querySelectorAll('a[href="#categories"]');
+  const visible = visibleCategories();
+  const show = visible.length >= 2;
+
   grid.textContent = '';
+  if (section) section.hidden = !show;
+  links.forEach((link) => {
+    link.hidden = !show;
+  });
 
-  if (state.categories.length === 0) {
-    grid.append(el('p', 'muted', 'Wala pang categories.'));
-    return;
-  }
+  if (!show) return;
 
-  for (const category of state.categories) {
+  for (const category of visible) {
     const card = el('button', 'category-card');
     card.type = 'button';
     card.style.setProperty('--cat', category.color);
@@ -191,16 +201,23 @@ function syncCategoryCards() {
 
 function renderFilters() {
   const chips = $('#categoryChips');
+  const visible = visibleCategories();
+  const show = visible.length >= 2;
+
   chips.textContent = '';
+  chips.hidden = !show;
+  if (!show) return;
 
   const all = el('button', 'chip' + (state.category === 'all' ? ' is-active' : ''), 'Lahat');
   all.type = 'button';
+  all.dataset.category = 'all';
   all.addEventListener('click', () => setCategory('all'));
   chips.append(all);
 
-  for (const category of state.categories) {
+  for (const category of visible) {
     const chip = el('button', 'chip' + (state.category === category.slug ? ' is-active' : ''));
     chip.type = 'button';
+    chip.dataset.category = category.slug;
     chip.style.setProperty('--cat', category.color);
     chip.append(el('span', null, category.name), el('span', 'chip-count', String(category.installers)));
     chip.addEventListener('click', () => setCategory(category.slug));
@@ -214,9 +231,8 @@ function setCategory(slug) {
     return;
   }
   state.category = slug;
-  document.querySelectorAll('#categoryChips .chip').forEach((chip, index) => {
-    const chipSlug = index === 0 ? 'all' : state.categories[index - 1] && state.categories[index - 1].slug;
-    chip.classList.toggle('is-active', chipSlug === slug);
+  document.querySelectorAll('#categoryChips .chip').forEach((chip) => {
+    chip.classList.toggle('is-active', chip.dataset.category === slug);
   });
   syncCategoryCards();
   updateClearButton();
@@ -565,8 +581,8 @@ function resetFilters() {
   state.sort = 'latest';
   $('#searchInput').value = '';
   $('#sortSelect').value = 'latest';
-  document.querySelectorAll('#categoryChips .chip').forEach((chip, index) => {
-    chip.classList.toggle('is-active', index === 0);
+  document.querySelectorAll('#categoryChips .chip').forEach((chip) => {
+    chip.classList.toggle('is-active', chip.dataset.category === 'all');
   });
   syncCategoryCards();
   updateClearButton();
