@@ -72,20 +72,6 @@ function formatDate(isoString) {
   return date.toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-function timeAgo(isoString) {
-  if (!isoString) return 'ngayon lang';
-  const then = new Date(isoString).getTime();
-  if (!Number.isFinite(then)) return 'ngayon lang';
-  const minutes = Math.max(0, Math.floor((Date.now() - then) / 60000));
-  if (minutes < 1) return 'ngayon lang';
-  if (minutes < 60) return `${minutes} min ang nakalipas`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours} oras ang nakalipas`;
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `${days} araw ang nakalipas`;
-  return formatDate(isoString);
-}
-
 function categoryFor(slug) {
   return state.categories.find((category) => category.slug === slug) || null;
 }
@@ -124,14 +110,6 @@ function applySiteMeta() {
   const meta = document.querySelector('meta[name="description"]');
   if (meta && description) meta.setAttribute('content', description);
   if (description) $('#heroDescription').textContent = description;
-
-  const heroUpdated = $('#heroUpdated');
-  const latest = state.installers
-    .map((item) => item.updatedAt || item.createdAt)
-    .filter(Boolean)
-    .sort()
-    .pop();
-  if (latest) heroUpdated.textContent = timeAgo(latest);
 }
 
 function renderStats() {
