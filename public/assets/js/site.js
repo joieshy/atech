@@ -451,10 +451,7 @@ function openModal(item) {
   const guide = $('#modalGuide');
   if (guide) {
     const title = `${item.title || ''} ${item.fileType || ''}`.toLowerCase();
-    let anchor = 'minipc';
-    if (/apk|android|pisotab/.test(title)) anchor = 'android';
-    else if (/orange ?pi|armbian|raspberry/.test(title)) anchor = 'orangepi';
-    else if (/\brouter\b|network tool/.test(title)) anchor = 'router';
+    const anchor = /orange ?pi|armbian|\.xz/.test(title) ? 'orangepi' : 'minipc';
     guide.href = `/setup#${anchor}`;
   }
 

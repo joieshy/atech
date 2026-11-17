@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Setup guide — ATECH</title>
-  <meta name="description" content="Step-by-step setup guide para sa ATECH installers: Mini PC (Windows), Orange Pi (Armbian), Android APK at router setup.">
+  <meta name="description" content="Tamang setup guide para sa Pay-Fi installers: paano mag-flash ng ISO sa Mini PC at ng image sa Orange Pi One, tapos setup ng dashboard.">
   <meta name="theme-color" content="#070411">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=20261117k">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=20261117l">
 </head>
 <body id="top">
   <div class="bg-grid" aria-hidden="true"></div>
@@ -54,8 +54,9 @@
         <span class="eyebrow">Setup guide</span>
         <h1>Kanya-kanyang setup guide,<br><span class="hl-acid">para sa bawat device.</span></h1>
         <p class="guide-lede">
-          Piliin kung saan mo i-install — Mini PC, Orange Pi, Android o router. Sundan lang ang steps,
-          walang kailangang advanced na kaalaman. Nasa <a href="/#installers">Installers</a> section ang files.
+          Dalawa ang device natin — <strong>Mini PC</strong> (x86_64, ISO installer) at <strong>Orange Pi One</strong>
+          (prebuilt image). Flash lang ang kailangan, tapos setup sa dashboard. Nasa
+          <a href="/#installers">Installers</a> section ang files.
         </p>
       </div>
 
@@ -64,262 +65,241 @@
           <span class="guide-toc-title">Piliin ang device</span>
           <a href="#minipc">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-            <span>Mini PC<small>Windows 10 / 11</small></span>
+            <span>Mini PC<small>ISO → USB → install</small></span>
           </a>
           <a href="#orangepi">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
-            <span>Orange Pi<small>Armbian / Debian</small></span>
-          </a>
-          <a href="#android">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 19h2"/></svg>
-            <span>Android<small>APK / PisoTab</small></span>
-          </a>
-          <a href="#router">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="14" width="20" height="7" rx="2"/><path d="M6 17.5h.01M9 17.5h.01M18 10a6 6 0 0 0-12 0"/></svg>
-            <span>Router<small>Network setup</small></span>
+            <span>Orange Pi One<small>Image → microSD → boot</small></span>
           </a>
         </aside>
 
         <div class="guide-body">
+          <!-- ============================ MINI PC ============================ -->
           <article class="guide-block" id="minipc">
             <div class="guide-block-head">
               <span class="guide-icon">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
               </span>
               <div>
-                <span class="guide-tag">Windows 10 / 11</span>
+                <span class="guide-tag">x86_64 · Debian 13</span>
                 <h2>Mini PC setup</h2>
-                <p>Para sa pisonet server, pisowifi billing at shop PC. Ito ang pinakamabilis at pinaka-karaniwang setup.</p>
+                <p>Bootable ISO na may awtomatikong Debian install at Pay-Fi na naka-install sa dulo. I-boot lang at hintayin — walang manual partitioning.</p>
               </div>
             </div>
 
             <ul class="guide-requirements">
-              <li>4 GB RAM o higit pa</li>
-              <li>64 GB storage</li>
-              <li>Windows 10/11 64-bit</li>
-              <li>LAN cable</li>
+              <li>x86_64 (Intel/AMD)</li>
+              <li>4 GB RAM+</li>
+              <li>16 GB+ disk</li>
+              <li>USB 4 GB+</li>
+              <li>LAN + internet</li>
             </ul>
 
+            <div class="guide-note">
+              <strong>⚠️ Buburahin ang unang disk</strong> ng mini PC — partisyon at lahat ng laman.
+              Huwag i-boot ang USB sa makinang may importanteng data. Kung 2+ ang disk, tatanungin ka
+              ng installer kung alin ang gagamitin.
+            </div>
+
+            <h3 class="guide-subhead">Part 1 — Pag-flash sa USB</h3>
             <ol class="guide-steps">
               <li>
-                <strong>I-download ang installer</strong>
-                <span>Pumunta sa <a href="/#installers">Installers</a>, piliin ang tamang version at i-download ang ZIP file.</span>
+                <strong>I-download ang ISO</strong>
+                <span>Kunin ang <code>payfi-debian-minipc-amd64.iso</code> sa <a href="/#installers">Installers</a>. Kung may <code>.sha256</code> file, pwede mong i-verify bago i-flash.</span>
               </li>
               <li>
-                <strong>I-extract sa sariling folder</strong>
-                <span>Right-click ang ZIP → <em>Extract All</em> → gawing <code>C:\ATECH</code>. Huwag patakbuhin ang setup sa loob mismo ng ZIP.</span>
+                <strong>Ihanda ang USB flash drive</strong>
+                <span>4 GB pataas. <em>Mabubura din ang laman ng USB</em>, kaya gumamit ng walang importanteng file.</span>
               </li>
               <li>
-                <strong>Run as administrator</strong>
-                <span>Buksan ang <code>setup.exe</code> gamit ang right-click → <em>Run as administrator</em> para walang permission error.</span>
+                <strong>I-flash gamit ang Balena Etcher</strong>
+                <span><em>Flash from file</em> → piliin ang <code>.iso</code> → <em>Select target</em> → ang USB → <em>Flash!</em> Hintayin ang “Flash Complete”.</span>
               </li>
               <li>
-                <strong>Sundan ang wizard</strong>
-                <span>Piliin ang install folder at port (default <code>8080</code>). I-tick ang “create desktop shortcut” para madaling buksan.</span>
-              </li>
-              <li>
-                <strong>Allow sa firewall</strong>
-                <span>Kapag may Windows Firewall prompt, i-check ang <em>Private networks</em> at i-click ang Allow access.</span>
-              </li>
-              <li>
-                <strong>I-set ang admin password</strong>
-                <span>Buksan ang <code>http://localhost:8080</code> sa browser at gumawa ng malakas na admin password.</span>
-              </li>
-              <li>
-                <strong>Static IP sa mini PC</strong>
-                <span>Control Panel → Network → IPv4 properties → hal. <code>192.168.1.10</code>. Kailangan ito para hindi magbago ang IP ng server.</span>
-              </li>
-              <li>
-                <strong>I-test ang isang client</strong>
-                <span>I-install ang client sa isang unit, i-point sa server IP, at subukan ang coin slot o voucher bago i-rollout sa lahat.</span>
+                <strong>O kaya Rufus (Windows)</strong>
+                <span>Piliin ang ISO → <em>Start</em> → kapag nagtanong, piliin ang <strong>DD mode</strong> (hindi ISO mode) para tama ang hybrid boot.</span>
               </li>
             </ol>
 
             <div class="guide-note">
-              <strong>Tip:</strong> I-off ang sleep/hibernate ng mini PC at i-exclude ang <code>C:\ATECH</code> sa antivirus kung na-block ang installer.
+              <strong>Kailangan ng internet sa install.</strong> Netinst ang Debian base, kaya i-connect ang LAN cable na may internet (DHCP) bago i-boot.
+            </div>
+
+            <h3 class="guide-subhead">Part 2 — I-boot at mag-install</h3>
+            <ol class="guide-steps" style="counter-reset: guide-step 4">
+              <li>
+                <strong>I-boot mula sa USB</strong>
+                <span>Isaksak ang USB sa mini PC at pindutin ang boot menu key — <code>F12</code>, <code>F2</code> o <code>Del</code> depende sa board.</span>
+              </li>
+              <li>
+                <strong>Piliin ang automatic install</strong>
+                <span>Nasa Debian boot menu ang <em>“Pay-Fi automatic install (ERASES the first disk)”</em> — default na ito, hintayin ang 30s o pindutin ang Enter.</span>
+              </li>
+              <li>
+                <strong>Hintayin ang ~15–30 minuto</strong>
+                <span>Awtomatik: language, disk, users, packages, GRUB, tapos ang Pay-Fi install sa dulo. Depende sa bilis ng internet at disk.</span>
+              </li>
+              <li>
+                <strong>Tanggalin ang USB</strong>
+                <span>Awtomatikong mag-reboot. Tanggalin ang USB kapag nagsimula nang mag-boot mula sa internal disk.</span>
+              </li>
+              <li>
+                <strong>Hanapin ang IP at buksan ang dashboard</strong>
+                <span>Tingnan ang DHCP list ng router, tapos buksan ang <code>http://&lt;ip&gt;:3000/admin</code> sa browser.</span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>Default credentials — palitan agad.</strong> Dashboard: <code>admin</code> / <code>admin2234</code>.
+              Debian console/SSH: <code>root</code> / <code>payfi2025</code> (at user <code>payfi</code> / <code>payfi2025</code>).
+              Pagkatapos mag-login, palitan agad sa dashboard → <em>Security</em>, at sa Debian gamit ang <code>passwd</code>.
+            </div>
+
+            <h3 class="guide-subhead">Part 3 — Setup sa dashboard</h3>
+            <ol class="guide-steps" style="counter-reset: guide-step 9">
+              <li>
+                <strong>Network → Routing</strong>
+                <span>I-assign ang roles: WAN = <code>enp*</code>/<code>eth*</code> na papunta sa modem, LAN/AP = pangalawang interface kung meron. I-on ang <em>Auto WAN DHCP</em> → <em>Apply router setup</em>.</span>
+              </li>
+              <li>
+                <strong>PayMongo</strong>
+                <span>Ilagay ang public at secret key para gumana ang online payment.</span>
+              </li>
+              <li>
+                <strong>Pricing at Vouchers</strong>
+                <span>I-set ang rates at gumawa ng voucher codes para sa customers.</span>
+              </li>
+              <li>
+                <strong>Security → Captive portal</strong>
+                <span>I-on ang captive portal → <em>Apply rules</em>. Ito ang magre-redirect sa customers papunta sa payment page.</span>
+              </li>
+              <li>
+                <strong>Fixed IP + bypass</strong>
+                <span>Para sa coin box o printer na hindi dapat hingan ng bayad: Network → Devices → Fixed/static IP → <em>Fix + bypass</em>.</span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>Updates:</strong> System tab → Software update → Check for updates → Update now.
+              Hindi nabubura ang <code>data.db</code>, settings at admin password.
             </div>
 
             <div class="guide-actions">
               <a class="btn btn--primary btn--sm" href="/#installers">
-                I-download ang installer
+                I-download ang ISO
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               </a>
               <a class="btn btn--outline btn--sm" href="#top">Balik sa taas</a>
             </div>
           </article>
 
+          <!-- ============================ ORANGE PI ========================== -->
           <article class="guide-block" id="orangepi">
             <div class="guide-block-head">
               <span class="guide-icon">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
               </span>
               <div>
-                <span class="guide-tag">Armbian / Debian</span>
+                <span class="guide-tag">Orange Pi One · H3</span>
                 <h2>Orange Pi setup</h2>
-                <p>Para sa 24/7 na server — mababa ang konsumo sa kuryente, perfect para sa pisonet na laging bukas.</p>
+                <p>Prebuilt na image — flash lang sa microSD, boot, at bukas na ang dashboard. Walang SSH o manual install na kailangan.</p>
               </div>
             </div>
 
             <ul class="guide-requirements">
-              <li>Orange Pi 3 / 5 / Zero 2</li>
-              <li>16 GB+ microSD (A2)</li>
-              <li>Armbian o Debian image</li>
-              <li>Ethernet cable</li>
+              <li>Orange Pi One (H3)</li>
+              <li>microSD 8 GB+ (Class 10)</li>
+              <li>5V 2A PSU (barrel)</li>
+              <li>LAN cable</li>
+              <li>USB WiFi dongle*</li>
             </ul>
 
+            <div class="guide-note">
+              <strong>⚠️ Hardware check:</strong> isang Ethernet port lang at walang onboard WiFi ang Orange Pi One.
+              Para makapag-serve ng customers, kailangan ng <em>USB WiFi dongle</em> na AP-capable
+              (RTL8188EU / RTL8192CU / MT7601U / RT5370) o USB Ethernet adapter. Kung wala, dashboard lang ang gagana.
+            </div>
+
+            <h3 class="guide-subhead">Part 1 — Pag-flash sa microSD</h3>
             <ol class="guide-steps">
               <li>
-                <strong>I-flash ang OS sa microSD</strong>
-                <span>Gamitin ang <code>balenaEtcher</code> para i-flash ang Armbian/Debian image sa microSD, tapos i-insert sa board.</span>
+                <strong>I-download ang image</strong>
+                <span>Kunin ang <code>payfi-orangepione-trixie-minimal.img.xz</code> sa <a href="/#installers">Installers</a>. <em>Huwag nang i-extract</em> — direktang tinatanggap ng Etcher ang <code>.img.xz</code>.</span>
               </li>
               <li>
-                <strong>Unang boot at login</strong>
-                <span>I-connect ang LAN at monitor, pagkatapos mag-login gamit ang <code>root</code> / <code>1234</code>. Mag-set agad ng bagong password at user.</span>
+                <strong>Ihanda ang microSD</strong>
+                <span>8 GB pataas, Class 10 / A1. Mabubura ang laman, kaya i-backup muna kung may files.</span>
               </li>
               <li>
-                <strong>I-update ang system</strong>
-                <span><code>sudo apt update &amp;&amp; sudo apt upgrade -y</code> at i-install ang kailangan: <code>sudo apt install -y unzip wget</code>.</span>
+                <strong>I-flash gamit ang Balena Etcher</strong>
+                <span><em>Flash from file</em> → piliin ang <code>.img.xz</code> → <em>Select target</em> → ang microSD → <em>Flash!</em> Mga 5–10 minuto.</span>
               </li>
               <li>
-                <strong>I-upload ang installer</strong>
-                <span>Galing sa PC: <code>scp installer.zip orangepi@192.168.1.20:/home/orangepi/</code>. Palitan ang IP ng IP ng Orange Pi mo.</span>
+                <strong>I-cancel ang format prompt</strong>
+                <span>Kapag nag-“You need to format the disk” ang Windows pagkatapos mag-flash, i-click ang <em>Cancel</em> — normal lang iyon.</span>
               </li>
               <li>
-                <strong>I-extract at i-install</strong>
-                <span><code>sudo unzip installer.zip -d /opt/pisonet &amp;&amp; cd /opt/pisonet</code> tapos <code>sudo chmod +x install.sh &amp;&amp; sudo ./install.sh</code>.</span>
+                <strong>Ilagay sa board</strong>
+                <span>Safe eject ang card, ilagay sa Orange Pi One, ikabit ang LAN cable, at saksakan ng <strong>5V 2A</strong> sa barrel jack (huwag sa micro-USB/OTG).</span>
+              </li>
+            </ol>
+
+            <h3 class="guide-subhead">Part 2 — First boot at dashboard</h3>
+            <ol class="guide-steps" style="counter-reset: guide-step 5">
+              <li>
+                <strong>Hintayin ang unang boot</strong>
+                <span>Mga 1–2 minuto. Awtomatikong nire-resize ang filesystem at may isang reboot.</span>
               </li>
               <li>
-                <strong>I-enable ang service</strong>
-                <span><code>sudo systemctl enable --now pisonet</code> at i-check kung tumatakbo: <code>systemctl status pisonet</code>.</span>
+                <strong>Hanapin ang IP</strong>
+                <span>Tingnan ang DHCP client list ng router. Sa console naman, <code>ip -4 addr show</code>.</span>
               </li>
               <li>
-                <strong>Buksan sa browser</strong>
-                <span>I-type ang <code>http://192.168.1.20:8080</code> sa PC na kaparehas ng network. Gumawa ng admin password.</span>
-              </li>
-              <li>
-                <strong>I-fix ang IP sa router</strong>
-                <span>Mag-DHCP reservation sa router para laging <code>192.168.1.20</code> ang Orange Pi kahit mag-reboot.</span>
+                <strong>Buksan ang dashboard</strong>
+                <span>Dashboard: <code>http://&lt;ip&gt;:3000/admin</code> · Customer portal: <code>http://&lt;ip&gt;:3000/</code></span>
               </li>
             </ol>
 
             <div class="guide-note">
-              <strong>Tip:</strong> Gumamit ng A2/Class 10 microSD o USB SSD para hindi mabilis masira ang card. I-monitor ang temperature gamit ang <code>sensors</code> o <code>vcgencmd measure_temp</code>.
+              <strong>Default credentials — palitan agad.</strong> Dashboard: <code>admin</code> / <code>admin2234</code>.
+              Armbian console/SSH: <code>root</code> / <code>payfi2025</code>. Nasa
+              <code>/opt/pay-fi/admin-initial-password.txt</code> din ang dashboard password kung nakalimutan.
+            </div>
+
+            <h3 class="guide-subhead">Part 3 — Setup sa dashboard</h3>
+            <ol class="guide-steps" style="counter-reset: guide-step 8">
+              <li>
+                <strong>Network → Routing</strong>
+                <span>WAN = <code>eth0</code>, AP = <code>wlan0</code> kung may USB WiFi (o LAN = <code>eth1</code> kung USB Ethernet). I-on ang <em>Auto WAN DHCP</em> → <em>Apply router setup</em>.</span>
+              </li>
+              <li>
+                <strong>WiFi AP (kung may dongle)</strong>
+                <span>WiFi tab → ilagay ang SSID at password → <em>Start Access Point</em>.</span>
+              </li>
+              <li>
+                <strong>PayMongo, Pricing at Vouchers</strong>
+                <span>I-set ang payment keys, rates at voucher codes.</span>
+              </li>
+              <li>
+                <strong>Security → Captive portal</strong>
+                <span>I-on at <em>Apply rules</em> para doon pumasok ang customers bago mag-internet.</span>
+              </li>
+              <li>
+                <strong>Coin slot sa GPIO (optional)</strong>
+                <span>NodeMCU → Coin Slot → Connection mode = <em>SBC GPIO (Orange Pi One)</em> → piliin ang pulse pin/edge → Save. <strong>3.3V lang</strong> ang GPIO — gumamit ng optocoupler kung 12V ang acceptor.</span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>Updates:</strong> System tab → Software update → Update now, o sa CLI:
+              <code>sudo bash /opt/pay-fi/scripts/update.sh</code>. Hindi nabubura ang <code>data.db</code> at config.
             </div>
 
             <div class="guide-actions">
               <a class="btn btn--primary btn--sm" href="/#installers">
-                I-download ang installer
+                I-download ang image
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               </a>
-              <a class="btn btn--outline btn--sm" href="#top">Balik sa taas</a>
-            </div>
-          </article>
-
-          <article class="guide-block" id="android">
-            <div class="guide-block-head">
-              <span class="guide-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 19h2"/></svg>
-              </span>
-              <div>
-                <span class="guide-tag">APK / PisoTab</span>
-                <h2>Android setup</h2>
-                <p>Para sa tablet o phone na gagamitin bilang PisoTab, voucher station o remote monitor.</p>
-              </div>
-            </div>
-
-            <ul class="guide-requirements">
-              <li>Android 8 o mas bago</li>
-              <li>2 GB RAM</li>
-              <li>Parehong WiFi/LAN sa server</li>
-            </ul>
-
-            <ol class="guide-steps">
-              <li>
-                <strong>I-download ang APK</strong>
-                <span>Buksan ang site sa phone/tablet at i-download ang APK file mula sa <a href="/#installers">Installers</a>.</span>
-              </li>
-              <li>
-                <strong>Payagan ang install from unknown apps</strong>
-                <span>Settings → Apps → Special access → <em>Install unknown apps</em> → piliin ang browser o file manager → Allow.</span>
-              </li>
-              <li>
-                <strong>I-install at buksan</strong>
-                <span>I-tap ang na-download na APK → Install → Open. Payagan ang storage at network permission.</span>
-              </li>
-              <li>
-                <strong>Ilagay ang server IP</strong>
-                <span>Sa app settings, ilagay ang IP ng mini PC o Orange Pi (hal. <code>192.168.1.10</code>) at i-save.</span>
-              </li>
-              <li>
-                <strong>I-lock bilang kiosk</strong>
-                <span>Gamitin ang screen pinning o kiosk mode para hindi makaalis ang customer sa app.</span>
-              </li>
-              <li>
-                <strong>I-off ang auto-update</strong>
-                <span>I-disable ang Play Store auto-update para hindi mabago ang version habang ginagamit sa shop.</span>
-              </li>
-            </ol>
-
-            <div class="guide-note">
-              <strong>Tip:</strong> Kung “App not installed” ang error, i-check kung may dating version na naka-install. I-uninstall muna bago mag-install ng bago.
-            </div>
-
-            <div class="guide-actions">
-              <a class="btn btn--primary btn--sm" href="/#installers">
-                I-download ang APK
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </a>
-              <a class="btn btn--outline btn--sm" href="#top">Balik sa taas</a>
-            </div>
-          </article>
-
-          <article class="guide-block" id="router">
-            <div class="guide-block-head">
-              <span class="guide-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="14" width="20" height="7" rx="2"/><path d="M6 17.5h.01M9 17.5h.01M18 10a6 6 0 0 0-12 0"/></svg>
-              </span>
-              <div>
-                <span class="guide-tag">Network</span>
-                <h2>Router at network setup</h2>
-                <p>Isang beses lang ayusin — para stable ang IP ng server at hindi mawalan ng connection ang clients.</p>
-              </div>
-            </div>
-
-            <ul class="guide-requirements">
-              <li>MikroTik / TP-Link / Tenda</li>
-              <li>Access sa admin panel</li>
-              <li>Listahan ng IP</li>
-            </ul>
-
-            <ol class="guide-steps">
-              <li>
-                <strong>I-set ang LAN IP ng router</strong>
-                <span>Hal. <code>192.168.1.1</code> at DHCP range na <code>192.168.1.100–200</code> para may space sa mga fixed IP.</span>
-              </li>
-              <li>
-                <strong>DHCP reservation sa server</strong>
-                <span>I-bind ang MAC address ng mini PC / Orange Pi sa <code>192.168.1.10</code> (o <code>.20</code>) para hindi magbago.</span>
-              </li>
-              <li>
-                <strong>I-point ang captive portal</strong>
-                <span>Kung may portal, i-set ang DNS o portal URL papunta sa IP ng server para doon pumasok ang customers.</span>
-              </li>
-              <li>
-                <strong>I-test ang client</strong>
-                <span>I-connect ang isang device at siguraduhing nakakakuha ito ng IP, nakaka-open ng portal at may internet pagkatapos magbayad.</span>
-              </li>
-              <li>
-                <strong>I-record ang lahat</strong>
-                <span>Isulat ang router IP, server IP at admin password sa notebook o notes para hindi makalimutan.</span>
-              </li>
-            </ol>
-
-            <div class="guide-note">
-              <strong>Tip:</strong> Huwag i-port forward ang admin panel sa internet. Kung kailangan ng remote access, gumamit ng VPN.
-            </div>
-
-            <div class="guide-actions">
-              <a class="btn btn--outline btn--sm" href="/#installers">Tingnan ang installers</a>
               <a class="btn btn--outline btn--sm" href="#top">Balik sa taas</a>
             </div>
           </article>

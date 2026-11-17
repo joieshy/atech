@@ -2094,7 +2094,7 @@ svg {
 
 .device-guides {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-top: 28px;
 }
@@ -3029,6 +3029,26 @@ svg {
   font-size: 0.76rem;
   color: var(--muted);
   white-space: nowrap;
+}
+
+.guide-subhead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 26px 0 14px;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--muted-2);
+}
+
+.guide-subhead::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
 }
 
 .guide-steps {
