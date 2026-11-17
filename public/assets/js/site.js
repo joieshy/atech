@@ -451,7 +451,9 @@ function openModal(item) {
   const guide = $('#modalGuide');
   if (guide) {
     const title = `${item.title || ''} ${item.fileType || ''}`.toLowerCase();
-    const anchor = /orange ?pi|armbian|\.xz/.test(title) ? 'orangepi' : 'minipc';
+    let anchor = 'minipc';
+    if (/coin ?box|nodemcu|esp8266|\.ino|\.bin/.test(title)) anchor = 'nodemcu';
+    else if (/orange ?pi|armbian|\.xz/.test(title)) anchor = 'orangepi';
     guide.href = `/setup#${anchor}`;
   }
 

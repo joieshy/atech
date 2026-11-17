@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=20261117l">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=20261117m">
 </head>
 <body id="top">
   <div class="bg-grid" aria-hidden="true"></div>
@@ -54,9 +54,9 @@
         <span class="eyebrow">Setup guide</span>
         <h1>Kanya-kanyang setup guide,<br><span class="hl-acid">para sa bawat device.</span></h1>
         <p class="guide-lede">
-          Dalawa ang device natin — <strong>Mini PC</strong> (x86_64, ISO installer) at <strong>Orange Pi One</strong>
-          (prebuilt image). Flash lang ang kailangan, tapos setup sa dashboard. Nasa
-          <a href="/#installers">Installers</a> section ang files.
+          Tatlong device ang suportado — <strong>Mini PC</strong> (x86_64, ISO installer), <strong>Orange Pi One</strong>
+          (prebuilt image) at <strong>NodeMCU coin box</strong> (ESP8266 firmware). Nasa
+          <a href="/#installers">Installers</a> section ang mga files.
         </p>
       </div>
 
@@ -70,6 +70,10 @@
           <a href="#orangepi">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
             <span>Orange Pi One<small>Image → microSD → boot</small></span>
+          </a>
+          <a href="#nodemcu">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 3v3M12 3v3M17 3v3M7 18v3M12 18v3M17 18v3"/></svg>
+            <span>NodeMCU<small>Coin box · ESP8266</small></span>
           </a>
         </aside>
 
@@ -298,6 +302,139 @@
             <div class="guide-actions">
               <a class="btn btn--primary btn--sm" href="/#installers">
                 I-download ang image
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+              <a class="btn btn--outline btn--sm" href="#top">Balik sa taas</a>
+            </div>
+          </article>
+
+          <!-- ============================= NODEMCU =========================== -->
+          <article class="guide-block" id="nodemcu">
+            <div class="guide-block-head">
+              <span class="guide-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 3v3M12 3v3M17 3v3M7 18v3M12 18v3M17 18v3"/></svg>
+              </span>
+              <div>
+                <span class="guide-tag">ESP8266 · Arduino IDE</span>
+                <h2>NodeMCU coin box setup</h2>
+                <p>Firmware ng coin acceptor — WiFi version. Ang board mismo ang nag-uulat ng barya sa server at sumusunod sa INHIBIT (bara) nito.</p>
+              </div>
+            </div>
+
+            <ul class="guide-requirements">
+              <li>NodeMCU v2/v3 (ESP-12E)</li>
+              <li>USB data cable</li>
+              <li>CH340 / CP2102 driver</li>
+              <li>Arduino IDE</li>
+              <li>12V coin acceptor</li>
+              <li>PC817 optocoupler</li>
+            </ul>
+
+            <div class="guide-note">
+              <strong>⚠️ 12V ang pulse ng coin acceptor, 3.3V lang ang GPIO ng ESP8266.</strong>
+              Huwag ikabit nang diretso — gumamit ng <em>optocoupler (PC817)</em>, 1kΩ sa LED side at
+              10kΩ pull-up papuntang 3.3V. Kailangan din ng <strong>common GND</strong> ng 12V supply at ng NodeMCU.
+            </div>
+
+            <h3 class="guide-subhead">Part 1 — Ihanda ang Arduino IDE</h3>
+            <ol class="guide-steps">
+              <li>
+                <strong>I-install ang Arduino IDE at driver</strong>
+                <span>I-download ang Arduino IDE 2.x at i-install. Kung hindi lumalabas ang port ng board, i-install ang <code>CH340</code> o <code>CP2102</code> driver para sa USB bridge nito.</span>
+              </li>
+              <li>
+                <strong>Idagdag ang ESP8266 board URL</strong>
+                <span><em>File → Preferences → Additional Boards Manager URLs</em> at ilagay: <code>https://arduino.esp8266.com/stable/package_esp8266com_index.json</code></span>
+              </li>
+              <li>
+                <strong>I-install ang ESP8266 core</strong>
+                <span><em>Tools → Board → Boards Manager</em> → hanapin ang <code>esp8266</code> (ESP8266 Community) → Install.</span>
+              </li>
+              <li>
+                <strong>Piliin ang board at port</strong>
+                <span><em>Tools → Board → NodeMCU 1.0 (ESP-12E Module)</em>, <em>Upload Speed</em> <code>115200</code>, tapos piliin ang COM port ng board.</span>
+              </li>
+            </ol>
+
+            <h3 class="guide-subhead">Part 2 — I-flash ang firmware</h3>
+            <ol class="guide-steps" style="counter-reset: guide-step 4">
+              <li>
+                <strong>Buksan ang firmware</strong>
+                <span>Ang file ay <code>nodemcu/coinbox-wifi/coinbox-wifi.ino</code> sa Pay-Fi repo. Ito ang <strong>WiFi version</strong> — hindi na kailangan ng USB serial sa server.</span>
+              </li>
+              <li>
+                <strong>Palitan ang DEVICE_ID kada board</strong>
+                <span><code>coinbox-1</code>, <code>coinbox-2</code>, <code>coinbox-3</code>, … Kung pareho ang ID ng dalawang board, mag-o-overwrite ang counter nila sa isa't isa.</span>
+              </li>
+              <li>
+                <strong>I-upload</strong>
+                <span>Pindutin ang <em>Upload</em> (→) at hintayin ang “Done uploading”. Kung naka-stuck sa “Connecting…”, pindutin at hawakan ang <em>FLASH</em> button ng board habang nag-u-upload.</span>
+              </li>
+              <li>
+                <strong>Buksan ang Serial Monitor</strong>
+                <span>Baud: <code>115200</code>. Itakda ang line ending sa <em>Newline</em> o <em>Both NL &amp; CR</em>.</span>
+              </li>
+              <li>
+                <strong>I-check ang boot log</strong>
+                <span>Dapat may <code>BOOT coinbox-wifi 1.0</code>, <code>MAC AA:BB:…</code>, <code>IP MODE dhcp</code>, tapos <code>STATUS …</code> kada 5 segundo.</span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>Custom board (eAzy MT &amp; WS5 v2.0):</strong> may built-in optocoupler na, kaya huwag nang mag-PC817 —
+              ikabit lang ang acceptor sa <code>COINSLOT</code> (<code>+</code> = 12V, <code>WHITE</code> = pulse, <code>−</code> = GND).
+              Default: coin sa <code>D4</code> (GPIO2), inhibit sa <code>D3</code> (GPIO0). Walang routing ang <code>D2</code> sa board na ito.
+            </div>
+
+            <h3 class="guide-subhead">Part 3 — WiFi setup ng board</h3>
+            <ol class="guide-steps" style="counter-reset: guide-step 9">
+              <li>
+                <strong>I-connect ang phone sa setup WiFi</strong>
+                <span>WiFi: <code>CoinBox-Setup</code> · password: <code>coinbox123</code></span>
+              </li>
+              <li>
+                <strong>Buksan ang setup page</strong>
+                <span><code>http://192.168.4.1</code> kung hindi kusang bumukas ang dashboard.</span>
+              </li>
+              <li>
+                <strong>Ilagay ang settings</strong>
+                <span>AP SSID at password ng box, pati server host/port/token → <em>I-save at kumonekta</em>. Naka-save ito sa EEPROM ng board.</span>
+              </li>
+              <li>
+                <strong>I-check ang status</strong>
+                <span>Dapat <em>CONNECTED</em> at <em>HTTP 200</em> para may heartbeat. Makikita rin dito ang IP (DHCP) at ang MAC ng board.</span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>Case-sensitive ang SSID</strong> at kasama ang flag emoji sa dulo (hal. <code>ShaiderBAM PisoWIFI</code>).
+              Kung “SSID HINDI MAKITA”, i-type ang <code>SCAN</code> sa Serial Monitor para makita kung anong SSID ang talagang nakikita ng board.
+            </div>
+
+            <h3 class="guide-subhead">Part 4 — Pairing sa dashboard</h3>
+            <ol class="guide-steps" style="counter-reset: guide-step 13">
+              <li>
+                <strong>Itugma ang Connection mode</strong>
+                <span>Admin → NodeMCU → Coin Slot → piliin ang <strong>WiFi / network HTTP</strong>. Dapat tugma sa na-flash na firmware — kung hindi, tahimik na walang mabibilang.</span>
+              </li>
+              <li>
+                <strong>I-test ang coin slot</strong>
+                <span>Maghulog ng barya. Dapat tumaas ang counter at may <code>POST /api/hardware/coins</code> na nagre-return ng <code>200</code>.</span>
+              </li>
+              <li>
+                <strong>(Optional) Fixed IP</strong>
+                <span>Admin → Network → Fixed / static IP devices → ilagay ang IP + MAC ng board. Laging DHCP ang firmware, kaya sa server gagawin ang reservation.</span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>Diagnostics sa Serial Monitor:</strong> <code>MON</code> (hanapin kung <code>D4</code> o <code>D6</code> ang gumagalaw kapag may barya),
+              <code>SETPIN D3|D8</code>, <code>POLARITY NORMAL|INVERTED</code>, <code>SWEEP</code>, at <code>CLEAR</code> (bura ng EEPROM).
+            </div>
+
+            <div class="guide-actions">
+              <a class="btn btn--primary btn--sm" href="/#contact">
+                Humingi ng firmware file
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               </a>
               <a class="btn btn--outline btn--sm" href="#top">Balik sa taas</a>
