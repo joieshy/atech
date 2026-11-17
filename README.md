@@ -10,7 +10,7 @@ Public download site + web admin para sa mga installer ng **PisoWiFi**, **PisoNe
 - **Web admin** (`/admin`) — split-screen login page, overview dashboard na may 7-day download chart, installer table, upload/edit/delete, publish/draft toggle at site settings.
 - **SQLite database** — `data/atech.db`, awtomatikong ginagawa sa first run. Walang MySQL/Postgres na kailangan.
 - **Direct downloads** — `/download/:slug` ang nag-stream ng file mula sa `storage/installers/` at nagbibilang ng downloads.
-- **Security basics** — HttpOnly signed session cookie, password check, login rate limit, CSP headers, file type whitelist at upload size limit.
+- **Security basics** — HttpOnly signed session cookie, password check, login rate limit, CSP headers, file type whitelist at upload size limit. May **Change password** form sa admin Settings.
 - **Sample entries** — may 6 demo installers para makita agad ang design. Pwede silang i-delete sa admin at palitan ng totoong files.
 
 ## Requirements
@@ -56,6 +56,14 @@ MAX_UPLOAD_MB=4096
 ```
 
 At kung nasa likod ka ng Nginx, i-match ang `client_max_body_size` sa `deploy/nginx.conf.example`.
+
+## Palitan ang admin password
+
+1. Pumunta sa `/admin` → **Settings**
+2. Sa **Admin password** panel, ilagay ang current password, bagong password (minimum 10 characters), at confirm
+3. Click **I-save ang password**
+
+Naka-save ito sa `.env` (mode `600`) at agad na nag-eepekto — hindi na kailangan mag-restart. Automatic ding ma-invalidate ang lahat ng ibang sessions pagkatapos palitan.
 
 ## Project structure
 
@@ -111,6 +119,7 @@ Naka-seed na: `pisowifi`, `pisonet`, `pisotab`, `others`. Para magdagdag o mag-r
 | GET | `/api/installers?q=&category=&sort=` | Published installers |
 | GET | `/download/:slug` | Download + counter |
 | POST | `/api/admin/login` | Admin login |
+| POST | `/api/admin/change-password` | Palitan ang admin password |
 | GET | `/api/admin/overview` | Dashboard stats |
 | GET | `/api/admin/installers` | Lahat ng installers (admin) |
 | POST | `/api/admin/installers` | Upload (multipart) |

@@ -27,8 +27,22 @@ function sign(value) {
   return crypto.createHmac('sha256', config.sessionSecret).update(value).digest('base64url');
 }
 
+/**
+ * Naka-base sa password ang version ng session. Kapag pinalitan ang
+ * password, automatic na ma-invalidate ang lahat ng lumang session.
+ */
+function passwordVersion() {
+  return crypto
+    .createHmac('sha256', config.sessionSecret)
+    .update(config.adminPassword)
+    .digest('base64url')
+    .slice(0, 16);
+}
+
 function createToken() {
-  const payload = Buffer.from(JSON.stringify({ exp: Date.now() + SESSION_TTL_MS })).toString('base64url');
+  const payload = Buffer.from(
+    JSON.stringify({ exp: Date.now() + SESSION_TTL_MS, v: passwordVersion() })
+  ).toString('base64url');
   return `${payload}.${sign(payload)}`;
 }
 
@@ -44,7 +58,7 @@ function verifyToken(token) {
 
   try {
     const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
-    return typeof data.exp === 'number' && data.exp > Date.now();
+    return typeof data.exp === 'number' && data.exp > Date.now() && data.v === passwordVersion();
   } catch {
     return false;
   }
@@ -121,10 +135,42 @@ function clearLoginAttempts(ip) {
   attempts.delete(ip);
 }
 
+/* --------------------------- change-password limit ------------------------ */
+
+const PASSWORD_WINDOW_MS = 15 * 60 * 1000;
+const PASSWORD_MAX_ATTEMPTS = 8;
+const passwordAttempts = new Map();
+
+function passwordChangeRateLimit(req, res, next) {
+  const key = req.ip || 'unknown';
+  const now = Date.now();
+  const record = passwordAttempts.get(key);
+
+  if (!record || record.resetAt <= now) {
+    passwordAttempts.set(key, { count: 1, resetAt: now + PASSWORD_WINDOW_MS });
+    return next();
+  }
+
+  record.count += 1;
+  if (record.count > PASSWORD_MAX_ATTEMPTS) {
+    const retry = Math.ceil((record.resetAt - now) / 60000);
+    return res.status(429).json({
+      error: `Sobra na ang pagtatangka. Subukan ulit pagkalipas ng ${retry} minuto.`
+    });
+  }
+  return next();
+}
+
+function clearPasswordChangeAttempts(ip) {
+  passwordAttempts.delete(ip);
+}
+
 const sweeper = setInterval(() => {
   const now = Date.now();
-  for (const [key, record] of attempts) {
-    if (record.resetAt <= now) attempts.delete(key);
+  for (const map of [attempts, passwordAttempts]) {
+    for (const [key, record] of map) {
+      if (record.resetAt <= now) map.delete(key);
+    }
   }
 }, 60 * 1000);
 sweeper.unref();
@@ -137,5 +183,7 @@ module.exports = {
   setSessionCookie,
   clearSessionCookie,
   loginRateLimit,
-  clearLoginAttempts
+  clearLoginAttempts,
+  passwordChangeRateLimit,
+  clearPasswordChangeAttempts
 };

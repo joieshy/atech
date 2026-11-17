@@ -4,7 +4,7 @@ const express = require('express');
 const fs = require('fs/promises');
 const path = require('path');
 const { db } = require('../db');
-const { config } = require('../config');
+const { config, persistAdminPassword } = require('../config');
 const { upload, removeUploadedFile } = require('../upload');
 const { slugify, uniqueSlug, toAdminInstaller, clampText } = require('../utils');
 const {
@@ -14,7 +14,9 @@ const {
   setSessionCookie,
   clearSessionCookie,
   loginRateLimit,
-  clearLoginAttempts
+  clearLoginAttempts,
+  passwordChangeRateLimit,
+  clearPasswordChangeAttempts
 } = require('../auth');
 
 const router = express.Router();
@@ -77,6 +79,46 @@ router.post('/api/admin/login', loginRateLimit, (req, res) => {
 router.post('/api/admin/logout', (req, res) => {
   clearSessionCookie(req, res);
   res.json({ ok: true });
+});
+
+router.post('/api/admin/change-password', requireAdmin, passwordChangeRateLimit, (req, res) => {
+  const body = req.body || {};
+  const currentPassword = typeof body.currentPassword === 'string' ? body.currentPassword : '';
+  const newPassword = typeof body.newPassword === 'string' ? body.newPassword : '';
+  const confirmPassword = typeof body.confirmPassword === 'string' ? body.confirmPassword : '';
+
+  if (!verifyPassword(currentPassword)) {
+    return res.status(400).json({ error: 'Mali ang current password.' });
+  }
+  if (newPassword.length < 10) {
+    return res.status(400).json({ error: 'Dapat hindi bababa sa 10 characters ang bagong password.' });
+  }
+  if (newPassword.length > 128) {
+    return res.status(400).json({ error: 'Masyadong mahaba ang bagong password (128 characters max).' });
+  }
+  if (/\s/.test(newPassword)) {
+    return res.status(400).json({ error: 'Walang spaces ang password.' });
+  }
+  if (/["'\\#]/.test(newPassword)) {
+    return res.status(400).json({ error: 'Iwasan ang quotes, backslash at # sa password.' });
+  }
+  if (newPassword === currentPassword) {
+    return res.status(400).json({ error: 'Dapat iba ang bagong password sa current password.' });
+  }
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ error: 'Hindi tugma ang confirm password.' });
+  }
+
+  try {
+    persistAdminPassword(newPassword);
+  } catch (error) {
+    console.error('[admin] hindi ma-save ang bagong password:', error.message);
+    return res.status(500).json({ error: 'Hindi ma-save ang password sa server. Subukan ulit.' });
+  }
+
+  clearPasswordChangeAttempts(req.ip);
+  setSessionCookie(req, res);
+  return res.json({ ok: true });
 });
 
 router.get('/api/admin/session', (req, res) => {

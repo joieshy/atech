@@ -444,11 +444,33 @@
               <section class="panel info-panel">
                 <div class="panel-head">
                   <div>
-                    <h2>Security</h2>
-                    <p>Admin access</p>
+                    <h2>Admin password</h2>
+                    <p>Palitan ang login password</p>
                   </div>
                 </div>
-                <p class="info-text">Nasa server lang ang password, hindi ito naka-save sa database. Para palitan, i-edit ang <code>ADMIN_PASSWORD</code> sa <code>.env</code> at i-restart ang app.</p>
+                <form class="password-form" id="passwordForm" novalidate>
+                  <label class="field">
+                    <span class="field-label">Current password</span>
+                    <input type="password" id="currentPassword" autocomplete="current-password" required>
+                  </label>
+                  <label class="field">
+                    <span class="field-label">New password</span>
+                    <input type="password" id="newPassword" autocomplete="new-password" minlength="10" maxlength="128" required>
+                    <span class="field-hint">Minimum 10 characters. Walang spaces o quotes.</span>
+                  </label>
+                  <label class="field">
+                    <span class="field-label">Confirm new password</span>
+                    <input type="password" id="confirmPassword" autocomplete="new-password" required>
+                  </label>
+                  <div class="form-error" id="passwordError" hidden>
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+                    <span></span>
+                  </div>
+                  <div class="form-actions">
+                    <button class="btn btn--primary btn--sm" type="submit" id="savePasswordBtn">I-save ang password</button>
+                  </div>
+                </form>
+                <p class="info-text">Naka-save sa <code>.env</code> ng server. Pag pinalitan, ma-invalidate ang ibang sessions.</p>
                 <div class="security-row">
                   <span class="security-badge"><i></i> HttpOnly session</span>
                   <span class="security-badge"><i></i> Login rate limit</span>

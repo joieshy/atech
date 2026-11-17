@@ -58,4 +58,54 @@ for (const dir of [config.dataDir, config.uploadDir]) {
   fs.mkdirSync(dir, { recursive: true });
 }
 
-module.exports = { config };
+/**
+ * Isinulat ang bagong admin password sa .env (0600) at ina-update agad
+ * ang in-memory config — hindi na kailangan mag-restart ng server.
+ */
+function persistAdminPassword(newPassword) {
+  if (typeof newPassword !== 'string' || !newPassword) {
+    throw new Error('Invalid password');
+  }
+
+  let content = '';
+  try {
+    content = fs.readFileSync(ENV_PATH, 'utf8');
+  } catch {
+    content = '';
+  }
+
+  const lines = content.split(/\r?\n/);
+  let replaced = false;
+  const nextLines = lines.map((line) => {
+    if (/^\s*ADMIN_PASSWORD\s*=/.test(line)) {
+      replaced = true;
+      return `ADMIN_PASSWORD=${newPassword}`;
+    }
+    return line;
+  });
+  if (!replaced) nextLines.push(`ADMIN_PASSWORD=${newPassword}`);
+
+  const output = nextLines.join('\n');
+  const tempPath = `${ENV_PATH}.tmp`;
+
+  fs.writeFileSync(tempPath, output, { mode: 0o600 });
+  try {
+    fs.renameSync(tempPath, ENV_PATH);
+  } catch {
+    fs.writeFileSync(ENV_PATH, output, { mode: 0o600 });
+    try {
+      fs.unlinkSync(tempPath);
+    } catch {
+      /* ignore */
+    }
+  }
+  try {
+    fs.chmodSync(ENV_PATH, 0o600);
+  } catch {
+    /* Windows / restricted filesystem */
+  }
+
+  config.adminPassword = newPassword;
+}
+
+module.exports = { config, persistAdminPassword };

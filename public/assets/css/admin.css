@@ -1769,6 +1769,17 @@ select option {
   line-height: 1.7;
 }
 
+.password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.password-form .form-actions {
+  margin-top: 2px;
+  padding-top: 14px;
+}
+
 .security-row {
   display: flex;
   flex-wrap: wrap;

@@ -815,6 +815,53 @@ async function deleteInstaller() {
   }
 }
 
+/* ----------------------------- change password ----------------------------- */
+
+async function changePassword(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const button = $('#savePasswordBtn');
+  const errorBox = $('#passwordError');
+  errorBox.hidden = true;
+
+  const current = $('#currentPassword').value;
+  const next = $('#newPassword').value;
+  const confirm = $('#confirmPassword').value;
+
+  const fail = (message) => {
+    errorBox.hidden = false;
+    errorBox.querySelector('span').textContent = message;
+  };
+
+  if (!current) return fail('Ilagay ang current password.');
+  if (next.length < 10) return fail('Minimum 10 characters ang bagong password.');
+  if (/\s/.test(next)) return fail('Walang spaces ang password.');
+  if (next === current) return fail('Dapat iba ang bagong password sa current password.');
+  if (next !== confirm) return fail('Hindi tugma ang confirm password.');
+
+  button.disabled = true;
+  const label = button.textContent;
+  button.textContent = 'Sinasave...';
+
+  try {
+    await api('/api/admin/change-password', {
+      method: 'POST',
+      body: { currentPassword: current, newPassword: next, confirmPassword: confirm }
+    });
+    form.reset();
+    toast('Napalitan ang password ng admin.');
+  } catch (error) {
+    if (error.status === 401) {
+      handleApiError(error);
+    } else {
+      fail(error.message);
+    }
+  } finally {
+    button.disabled = false;
+    button.textContent = label;
+  }
+}
+
 /* ---------------------------------- toast --------------------------------- */
 
 function toast(message, type = 'success') {
@@ -903,6 +950,7 @@ function bindEvents() {
   $('#emptyUploadBtn').addEventListener('click', () => openUploadModal());
 
   $('#settingsForm').addEventListener('submit', saveSettings);
+  $('#passwordForm').addEventListener('submit', changePassword);
 
   $('#adminSearch').addEventListener('input', (event) => {
     state.filters.q = event.target.value;
