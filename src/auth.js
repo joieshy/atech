@@ -184,11 +184,15 @@ function requireAdmin(req, res, next) {
  * cross-site form.
  */
 function requireCsrf(req, res, next) {
-  if (
-    ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) &&
-    req.get('X-Requested-With') !== 'XMLHttpRequest'
-  ) {
-    return res.status(403).json({ error: 'Invalid request.' });
+  if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+    return next();
+  }
+
+  const hasHeader = req.get('X-Requested-With') === 'XMLHttpRequest';
+  const sameOrigin = req.get('Sec-Fetch-Site') === 'same-origin';
+
+  if (!hasHeader && !sameOrigin) {
+    return res.status(403).json({ error: 'Invalid request. I-refresh ang admin page at subukan ulit.' });
   }
   return next();
 }

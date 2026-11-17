@@ -151,7 +151,7 @@ Tingnan ang **[DEPLOY.md](DEPLOY.md)** para sa step-by-step (Ubuntu + Nginx + sy
 - **HTTPS** sa domain (Let's Encrypt) at HSTS header kapag naka-HTTPS.
 - **Admin auth**: password + opaque, database-backed session cookie. `HttpOnly`, `SameSite=Lax`, `Secure` kapag HTTPS, 12-hour expiry. Naka-hash (SHA-256) lang ang session token sa database.
 - **Login rate limit** (10 attempts / 15 min) at **change-password limit** (8 / 15 min).
-- **CSRF guard**: lahat ng state-changing admin requests ay kailangan ng `X-Requested-With: XMLHttpRequest` header.
+- **CSRF guard**: lahat ng state-changing admin requests ay kailangang same-origin (`Sec-Fetch-Site`) o may `X-Requested-With: XMLHttpRequest` header.
 - **Session control**: makikita sa Settings → Active sessions; pwedeng i-logout ang ibang devices. Pag pinalitan ang password, lahat ng sessions maliban sa kasalukuyan ay revoked.
 - **CSP**, `X-Frame-Options`, `nosniff`, Referrer-Policy; prepared SQLite statements; upload extension whitelist; files sa labas ng public web root.
 

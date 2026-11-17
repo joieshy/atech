@@ -202,6 +202,10 @@ function handleApiError(error) {
     toast('Nag-expire ang session. Mag-login ulit.', 'error');
     return;
   }
+  if (error.status === 403) {
+    toast('Invalid request. I-refresh ang admin page (Ctrl+F5) at subukan ulit.', 'error');
+    return;
+  }
   toast(error.message || 'May error na nangyari.', 'error');
 }
 
@@ -780,7 +784,11 @@ async function submitUpload(event) {
     void result;
   } catch (error) {
     state.uploading = false;
-    setUploadError(error.message);
+    setUploadError(
+      error.status === 403
+        ? 'Invalid request. I-refresh ang admin page (Ctrl+F5) at subukan ulit.'
+        : error.message
+    );
     if (error.status === 401) handleApiError(error);
   } finally {
     state.uploading = false;
