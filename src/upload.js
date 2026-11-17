@@ -6,9 +6,25 @@ const multer = require('multer');
 const { config } = require('./config');
 
 const ALLOWED_EXTENSIONS = new Set([
-  '.apk', '.exe', '.msi', '.zip', '.rar', '.7z', '.iso', '.img',
-  '.tar', '.gz', '.tgz', '.bin', '.dmg', '.deb', '.run', '.pdf'
+  // Android
+  '.apk', '.apks', '.xapk', '.apkm', '.aab', '.obb',
+  // Windows
+  '.exe', '.msi', '.msix', '.msixbundle', '.appx', '.appxbundle', '.cab',
+  // Archives
+  '.zip', '.zipx', '.rar', '.7z', '.tar', '.gz', '.tgz', '.bz2', '.tbz2',
+  '.xz', '.zst', '.lz', '.lzma', '.z', '.gzip',
+  // Disk images / packages
+  '.iso', '.img', '.bin', '.dmg', '.pkg', '.deb', '.run', '.apkg',
+  // Docs
+  '.pdf'
 ]);
+
+// Split archives: file.001, file.002 ... file.r00, file.r01 ...
+const SPLIT_ARCHIVE_EXTENSION = /^\.(r\d{2}|\d{3})$/;
+
+function isAllowedExtension(extension) {
+  return ALLOWED_EXTENSIONS.has(extension) || SPLIT_ARCHIVE_EXTENSION.test(extension);
+}
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -31,9 +47,9 @@ const upload = multer({
   },
   fileFilter(req, file, cb) {
     const ext = path.extname(file.originalname || '').toLowerCase();
-    if (!ALLOWED_EXTENSIONS.has(ext)) {
+    if (!isAllowedExtension(ext)) {
       const error = new Error(
-        `Hindi supported ang "${ext || 'walang extension'}" na file. Mga allowed: ${[...ALLOWED_EXTENSIONS].join(', ')}`
+        `Hindi supported ang "${ext || 'walang extension'}" na file. Mga allowed: ${[...ALLOWED_EXTENSIONS].join(', ')} at split archives (.001, .r00).`
       );
       error.code = 'INVALID_FILE_TYPE';
       return cb(error);
@@ -57,4 +73,4 @@ async function removeUploadedFile(file) {
   }
 }
 
-module.exports = { upload, removeUploadedFile, ALLOWED_EXTENSIONS };
+module.exports = { upload, removeUploadedFile, ALLOWED_EXTENSIONS, isAllowedExtension };

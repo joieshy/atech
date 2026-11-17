@@ -44,7 +44,7 @@ Pag-first run, gagawa ito ng `.env` na may random admin password at ipi-print sa
 ## Paano mag-upload ng installer
 
 1. Pumunta sa `/admin` → **New upload**.
-2. I-drop o i-click ang file (APK, EXE, MSI, ZIP, RAR, 7Z, ISO, IMG, TAR, GZ, BIN, DMG, DEB, RUN, PDF).
+2. I-drop o i-click ang file (APK, APKS, XAPK, EXE, MSI, MSIX, ZIP, RAR, 7Z, XZ, ISO, IMG, TAR, GZ, BIN, DMG, DEB, RUN, PDF, at split archives `.001` / `.r00`).
 3. Punan ang title, category, version at description.
 4. Piliin kung **Published** (visible agad sa site) o **Featured** (lalabas sa unahan).
 5. I-submit. Naka-save na ang file sa `storage/installers/` at ang record sa SQLite.
