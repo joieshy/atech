@@ -160,19 +160,6 @@ const DEMO_INSTALLERS = [
     created_at: '2026-11-09T13:20:00.000Z'
   },
   {
-    slug: 'pisotab-launcher',
-    title: 'PisoTab Launcher',
-    category: 'pisotab',
-    version: '2.4.6',
-    description:
-      'Kiosk launcher para sa pisotab station. I-lock ang tablet sa piso session, may timer, coin detector at remote restart support.',
-    file: 'demo-pisotab-launcher.zip',
-    original: 'PisoTab-Launcher-v2.4.6.zip',
-    downloads: 0,
-    featured: 1,
-    created_at: '2026-11-05T02:45:00.000Z'
-  },
-  {
     slug: 'pisotab-remote-dashboard',
     title: 'PisoTab Remote Dashboard',
     category: 'pisotab',
