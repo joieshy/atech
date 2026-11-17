@@ -69,6 +69,10 @@ app.get('/license', (req, res) => {
   res.sendFile(path.join(config.root, 'public', 'license.html'));
 });
 
+app.get('/setup', (req, res) => {
+  res.sendFile(path.join(config.root, 'public', 'setup.html'));
+});
+
 app.use(
   '/media/covers',
   express.static(config.coverDir, {

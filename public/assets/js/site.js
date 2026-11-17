@@ -448,6 +448,16 @@ function openModal(item) {
   $('#modalDownload').href = `/download/${encodeURIComponent(item.slug)}`;
   $('#modalCopy').dataset.slug = item.slug;
 
+  const guide = $('#modalGuide');
+  if (guide) {
+    const title = `${item.title || ''} ${item.fileType || ''}`.toLowerCase();
+    let anchor = 'minipc';
+    if (/apk|android|pisotab/.test(title)) anchor = 'android';
+    else if (/orange ?pi|armbian|raspberry/.test(title)) anchor = 'orangepi';
+    else if (/\brouter\b|network tool/.test(title)) anchor = 'router';
+    guide.href = `/setup#${anchor}`;
+  }
+
   lastFocused = document.activeElement;
   modal.hidden = false;
   document.body.style.overflow = 'hidden';

@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="fil">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Setup guide — ATECH</title>
+  <meta name="description" content="Step-by-step setup guide para sa ATECH installers: Mini PC (Windows), Orange Pi (Armbian), Android APK at router setup.">
+  <meta name="theme-color" content="#070411">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=20261117k">
+</head>
+<body id="top">
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="orb orb--1" aria-hidden="true"></div>
+  <div class="orb orb--2" aria-hidden="true"></div>
+
+  <header class="site-header is-scrolled">
+    <div class="container header-inner">
+      <a class="brand" href="/" aria-label="ATECH home">
+        <span class="brand-mark">
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <defs>
+              <linearGradient id="guideBrandGradient" x1="0" y1="0" x2="1" y2="1">
+                <stop stop-color="#c8f751"/><stop offset="1" stop-color="#8b5cf6"/>
+              </linearGradient>
+            </defs>
+            <path d="M32 9.5 51 20v23L32 54.5 13 43V20L32 9.5Z" fill="none" stroke="url(#guideBrandGradient)" stroke-width="2.5" opacity=".9"/>
+            <path d="M23 43.5 32 20l9 23.5" fill="none" stroke="url(#guideBrandGradient)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M26.5 36.5h11" stroke="url(#guideBrandGradient)" stroke-width="4.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="brand-text">ATECH<span class="brand-dot">.</span></span>
+      </a>
+
+      <nav class="page-nav" aria-label="Setup guide navigation">
+        <a href="/">Home</a>
+        <a href="/#installers">Installers</a>
+        <a href="/setup" class="is-current">Setup guide</a>
+      </nav>
+
+      <a class="btn btn--outline btn--sm" href="/#installers">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        Installers
+      </a>
+    </div>
+  </header>
+
+  <main class="guide-page">
+    <div class="container">
+      <div class="guide-head">
+        <span class="eyebrow">Setup guide</span>
+        <h1>Kanya-kanyang setup guide,<br><span class="hl-acid">para sa bawat device.</span></h1>
+        <p class="guide-lede">
+          Piliin kung saan mo i-install — Mini PC, Orange Pi, Android o router. Sundan lang ang steps,
+          walang kailangang advanced na kaalaman. Nasa <a href="/#installers">Installers</a> section ang files.
+        </p>
+      </div>
+
+      <div class="guide-layout">
+        <aside class="guide-toc" aria-label="Mga guide">
+          <span class="guide-toc-title">Piliin ang device</span>
+          <a href="#minipc">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span>Mini PC<small>Windows 10 / 11</small></span>
+          </a>
+          <a href="#orangepi">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
+            <span>Orange Pi<small>Armbian / Debian</small></span>
+          </a>
+          <a href="#android">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 19h2"/></svg>
+            <span>Android<small>APK / PisoTab</small></span>
+          </a>
+          <a href="#router">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="14" width="20" height="7" rx="2"/><path d="M6 17.5h.01M9 17.5h.01M18 10a6 6 0 0 0-12 0"/></svg>
+            <span>Router<small>Network setup</small></span>
+          </a>
+        </aside>
+
+        <div class="guide-body">
+          <article class="guide-block" id="minipc">
+            <div class="guide-block-head">
+              <span class="guide-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+              </span>
+              <div>
+                <span class="guide-tag">Windows 10 / 11</span>
+                <h2>Mini PC setup</h2>
+                <p>Para sa pisonet server, pisowifi billing at shop PC. Ito ang pinakamabilis at pinaka-karaniwang setup.</p>
+              </div>
+            </div>
+
+            <ul class="guide-requirements">
+              <li>4 GB RAM o higit pa</li>
+              <li>64 GB storage</li>
+              <li>Windows 10/11 64-bit</li>
+              <li>LAN cable</li>
+            </ul>
+
+            <ol class="guide-steps">
+              <li>
+                <strong>I-download ang installer</strong>
+                <span>Pumunta sa <a href="/#installers">Installers</a>, piliin ang tamang version at i-download ang ZIP file.</span>
+              </li>
+              <li>
+                <strong>I-extract sa sariling folder</strong>
+                <span>Right-click ang ZIP → <em>Extract All</em> → gawing <code>C:\ATECH</code>. Huwag patakbuhin ang setup sa loob mismo ng ZIP.</span>
+              </li>
+              <li>
+                <strong>Run as administrator</strong>
+                <span>Buksan ang <code>setup.exe</code> gamit ang right-click → <em>Run as administrator</em> para walang permission error.</span>
+              </li>
+              <li>
+                <strong>Sundan ang wizard</strong>
+                <span>Piliin ang install folder at port (default <code>8080</code>). I-tick ang “create desktop shortcut” para madaling buksan.</span>
+              </li>
+              <li>
+                <strong>Allow sa firewall</strong>
+                <span>Kapag may Windows Firewall prompt, i-check ang <em>Private networks</em> at i-click ang Allow access.</span>
+              </li>
+              <li>
+                <strong>I-set ang admin password</strong>
+                <span>Buksan ang <code>http://localhost:8080</code> sa browser at gumawa ng malakas na admin password.</span>
+              </li>
+              <li>
+                <strong>Static IP sa mini PC</strong>
+                <span>Control Panel → Network → IPv4 properties → hal. <code>192.168.1.10</code>. Kailangan ito para hindi magbago ang IP ng server.</span>
+              </li>
+              <li>
+                <strong>I-test ang isang client</strong>
+                <span>I-install ang client sa isang unit, i-point sa server IP, at subukan ang coin slot o voucher bago i-rollout sa lahat.</span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>Tip:</strong> I-off ang sleep/hibernate ng mini PC at i-exclude ang <code>C:\ATECH</code> sa antivirus kung na-block ang installer.
+            </div>
+
+            <div class="guide-actions">
+              <a class="btn btn--primary btn--sm" href="/#installers">
+                I-download ang installer
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+              <a class="btn btn--outline btn--sm" href="#top">Balik sa taas</a>
+            </div>
+          </article>
+
+          <article class="guide-block" id="orangepi">
+            <div class="guide-block-head">
+              <span class="guide-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
+              </span>
+              <div>
+                <span class="guide-tag">Armbian / Debian</span>
+                <h2>Orange Pi setup</h2>
+                <p>Para sa 24/7 na server — mababa ang konsumo sa kuryente, perfect para sa pisonet na laging bukas.</p>
+              </div>
+            </div>
+
+            <ul class="guide-requirements">
+              <li>Orange Pi 3 / 5 / Zero 2</li>
+              <li>16 GB+ microSD (A2)</li>
+              <li>Armbian o Debian image</li>
+              <li>Ethernet cable</li>
+            </ul>
+
+            <ol class="guide-steps">
+              <li>
+                <strong>I-flash ang OS sa microSD</strong>
+                <span>Gamitin ang <code>balenaEtcher</code> para i-flash ang Armbian/Debian image sa microSD, tapos i-insert sa board.</span>
+              </li>
+              <li>
+                <strong>Unang boot at login</strong>
+                <span>I-connect ang LAN at monitor, pagkatapos mag-login gamit ang <code>root</code> / <code>1234</code>. Mag-set agad ng bagong password at user.</span>
+              </li>
+              <li>
+                <strong>I-update ang system</strong>
+                <span><code>sudo apt update &amp;&amp; sudo apt upgrade -y</code> at i-install ang kailangan: <code>sudo apt install -y unzip wget</code>.</span>
+              </li>
+              <li>
+                <strong>I-upload ang installer</strong>
+                <span>Galing sa PC: <code>scp installer.zip orangepi@192.168.1.20:/home/orangepi/</code>. Palitan ang IP ng IP ng Orange Pi mo.</span>
+              </li>
+              <li>
+                <strong>I-extract at i-install</strong>
+                <span><code>sudo unzip installer.zip -d /opt/pisonet &amp;&amp; cd /opt/pisonet</code> tapos <code>sudo chmod +x install.sh &amp;&amp; sudo ./install.sh</code>.</span>
+              </li>
+              <li>
+                <strong>I-enable ang service</strong>
+                <span><code>sudo systemctl enable --now pisonet</code> at i-check kung tumatakbo: <code>systemctl status pisonet</code>.</span>
+              </li>
+              <li>
+                <strong>Buksan sa browser</strong>
+                <span>I-type ang <code>http://192.168.1.20:8080</code> sa PC na kaparehas ng network. Gumawa ng admin password.</span>
+              </li>
+              <li>
+                <strong>I-fix ang IP sa router</strong>
+                <span>Mag-DHCP reservation sa router para laging <code>192.168.1.20</code> ang Orange Pi kahit mag-reboot.</span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>Tip:</strong> Gumamit ng A2/Class 10 microSD o USB SSD para hindi mabilis masira ang card. I-monitor ang temperature gamit ang <code>sensors</code> o <code>vcgencmd measure_temp</code>.
+            </div>
+
+            <div class="guide-actions">
+              <a class="btn btn--primary btn--sm" href="/#installers">
+                I-download ang installer
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+              <a class="btn btn--outline btn--sm" href="#top">Balik sa taas</a>
+            </div>
+          </article>
+
+          <article class="guide-block" id="android">
+            <div class="guide-block-head">
+              <span class="guide-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 19h2"/></svg>
+              </span>
+              <div>
+                <span class="guide-tag">APK / PisoTab</span>
+                <h2>Android setup</h2>
+                <p>Para sa tablet o phone na gagamitin bilang PisoTab, voucher station o remote monitor.</p>
+              </div>
+            </div>
+
+            <ul class="guide-requirements">
+              <li>Android 8 o mas bago</li>
+              <li>2 GB RAM</li>
+              <li>Parehong WiFi/LAN sa server</li>
+            </ul>
+
+            <ol class="guide-steps">
+              <li>
+                <strong>I-download ang APK</strong>
+                <span>Buksan ang site sa phone/tablet at i-download ang APK file mula sa <a href="/#installers">Installers</a>.</span>
+              </li>
+              <li>
+                <strong>Payagan ang install from unknown apps</strong>
+                <span>Settings → Apps → Special access → <em>Install unknown apps</em> → piliin ang browser o file manager → Allow.</span>
+              </li>
+              <li>
+                <strong>I-install at buksan</strong>
+                <span>I-tap ang na-download na APK → Install → Open. Payagan ang storage at network permission.</span>
+              </li>
+              <li>
+                <strong>Ilagay ang server IP</strong>
+                <span>Sa app settings, ilagay ang IP ng mini PC o Orange Pi (hal. <code>192.168.1.10</code>) at i-save.</span>
+              </li>
+              <li>
+                <strong>I-lock bilang kiosk</strong>
+                <span>Gamitin ang screen pinning o kiosk mode para hindi makaalis ang customer sa app.</span>
+              </li>
+              <li>
+                <strong>I-off ang auto-update</strong>
+                <span>I-disable ang Play Store auto-update para hindi mabago ang version habang ginagamit sa shop.</span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>Tip:</strong> Kung “App not installed” ang error, i-check kung may dating version na naka-install. I-uninstall muna bago mag-install ng bago.
+            </div>
+
+            <div class="guide-actions">
+              <a class="btn btn--primary btn--sm" href="/#installers">
+                I-download ang APK
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+              <a class="btn btn--outline btn--sm" href="#top">Balik sa taas</a>
+            </div>
+          </article>
+
+          <article class="guide-block" id="router">
+            <div class="guide-block-head">
+              <span class="guide-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="14" width="20" height="7" rx="2"/><path d="M6 17.5h.01M9 17.5h.01M18 10a6 6 0 0 0-12 0"/></svg>
+              </span>
+              <div>
+                <span class="guide-tag">Network</span>
+                <h2>Router at network setup</h2>
+                <p>Isang beses lang ayusin — para stable ang IP ng server at hindi mawalan ng connection ang clients.</p>
+              </div>
+            </div>
+
+            <ul class="guide-requirements">
+              <li>MikroTik / TP-Link / Tenda</li>
+              <li>Access sa admin panel</li>
+              <li>Listahan ng IP</li>
+            </ul>
+
+            <ol class="guide-steps">
+              <li>
+                <strong>I-set ang LAN IP ng router</strong>
+                <span>Hal. <code>192.168.1.1</code> at DHCP range na <code>192.168.1.100–200</code> para may space sa mga fixed IP.</span>
+              </li>
+              <li>
+                <strong>DHCP reservation sa server</strong>
+                <span>I-bind ang MAC address ng mini PC / Orange Pi sa <code>192.168.1.10</code> (o <code>.20</code>) para hindi magbago.</span>
+              </li>
+              <li>
+                <strong>I-point ang captive portal</strong>
+                <span>Kung may portal, i-set ang DNS o portal URL papunta sa IP ng server para doon pumasok ang customers.</span>
+              </li>
+              <li>
+                <strong>I-test ang client</strong>
+                <span>I-connect ang isang device at siguraduhing nakakakuha ito ng IP, nakaka-open ng portal at may internet pagkatapos magbayad.</span>
+              </li>
+              <li>
+                <strong>I-record ang lahat</strong>
+                <span>Isulat ang router IP, server IP at admin password sa notebook o notes para hindi makalimutan.</span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>Tip:</strong> Huwag i-port forward ang admin panel sa internet. Kung kailangan ng remote access, gumamit ng VPN.
+            </div>
+
+            <div class="guide-actions">
+              <a class="btn btn--outline btn--sm" href="/#installers">Tingnan ang installers</a>
+              <a class="btn btn--outline btn--sm" href="#top">Balik sa taas</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="legal-footer">
+    <div class="container">
+      <span>© 2026 ATECH. Para sa personal at shop use.</span>
+      <span><a href="/">Home</a> · <a href="/#installers">Installers</a> · <a href="/license">License</a></span>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const links = [...document.querySelectorAll('.guide-toc a')];
+      const blocks = links
+        .map((link) => document.querySelector(link.getAttribute('href')))
+        .filter(Boolean);
+      if (!blocks.length) return;
+
+      const setActive = (id) => {
+        links.forEach((link) => {
+          link.classList.toggle('is-active', link.getAttribute('href') === `#${id}`);
+        });
+      };
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+          if (visible[0]) setActive(visible[0].target.id);
+        },
+        { rootMargin: '-96px 0px -55% 0px', threshold: 0 }
+      );
+
+      blocks.forEach((block) => observer.observe(block));
+      if (location.hash) setActive(location.hash.slice(1));
+    })();
+  </script>
+</body>
+</html>
