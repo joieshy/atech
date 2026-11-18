@@ -694,6 +694,7 @@ svg {
   display: grid;
   place-items: center;
   isolation: isolate;
+  --phone-scale: 0.64;
 }
 
 .art-glow {
@@ -732,12 +733,386 @@ svg {
   border: 1px dashed rgba(200, 247, 81, 0.12);
 }
 
+/* device stage — desktop + phone */
+
+.device-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+/* desktop mockup */
+
+.desktop {
+  position: absolute;
+  top: 4%;
+  left: 5%;
+  width: 90%;
+  animation: float 9s ease-in-out infinite;
+  animation-delay: -1.4s;
+}
+
+.desktop-screen {
+  position: relative;
+  padding: 7px;
+  border-radius: 16px;
+  background: linear-gradient(165deg, #2a1a45 0%, #150c28 46%, #0a0614 100%);
+  box-shadow:
+    0 44px 84px -44px rgba(0, 0, 0, 0.95),
+    0 0 66px -24px rgba(139, 92, 246, 0.45),
+    0 0 110px -50px rgba(200, 247, 81, 0.32);
+}
+
+.desktop-screen::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(150deg, rgba(200, 247, 81, 0.5), rgba(139, 92, 246, 0.05) 46%, rgba(167, 139, 250, 0.55));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.desktop-view {
+  position: relative;
+  aspect-ratio: 16 / 8.4;
+  border-radius: 11px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 16% 4%, rgba(139, 92, 246, 0.34), transparent 56%),
+    radial-gradient(circle at 88% 96%, rgba(200, 247, 81, 0.14), transparent 58%),
+    linear-gradient(155deg, #150c2a 0%, #0a0616 55%, #07040f 100%);
+}
+
+.desktop-wall-glow {
+  position: absolute;
+  right: -12%;
+  bottom: -34%;
+  width: 68%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.4), rgba(139, 92, 246, 0) 66%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.desktop-wall-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(circle at 50% 44%, #000 10%, transparent 78%);
+  mask-image: radial-gradient(circle at 50% 44%, #000 10%, transparent 78%);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.desktop-wall-mark {
+  position: absolute;
+  right: -2%;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-display);
+  font-size: 76px;
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.035);
+  pointer-events: none;
+}
+
+.desktop-wall-brand {
+  position: absolute;
+  top: 9px;
+  left: 11px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.desktop-wall-logo {
+  width: 15px;
+  height: 15px;
+  border-radius: 5px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(140deg, #d4ff5e, #8b5cf6);
+  color: #0a0614;
+  font-family: var(--font-display);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.desktop-wall-copy {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.desktop-wall-copy strong {
+  font-family: var(--font-mono);
+  font-size: 6.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.desktop-wall-copy small {
+  font-family: var(--font-mono);
+  font-size: 5.2px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(240, 235, 255, 0.4);
+}
+
+/* pisonet timer widget */
+
+.desktop-timer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -45%);
+  z-index: 3;
+  width: 62%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 9px 12px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(167, 139, 250, 0.26);
+  background: linear-gradient(165deg, rgba(22, 14, 40, 0.82), rgba(8, 5, 16, 0.9));
+  box-shadow:
+    0 26px 54px -30px rgba(0, 0, 0, 0.95),
+    0 0 50px -22px rgba(139, 92, 246, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.desktop-timer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 5.4px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.desktop-timer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent);
+}
+
+.desktop-timer-status i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+.desktop-timer-shop {
+  color: rgba(240, 235, 255, 0.4);
+}
+
+.desktop-timer-label {
+  font-family: var(--font-mono);
+  font-size: 5.4px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(240, 235, 255, 0.42);
+}
+
+.desktop-timer-clock {
+  font-family: var(--font-display);
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: 0.02em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 24px rgba(200, 247, 81, 0.35);
+  margin: 1px 0 2px;
+}
+
+.desktop-timer-bar {
+  display: block;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.desktop-timer-bar i {
+  display: block;
+  width: 94%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), #8b5cf6);
+  box-shadow: 0 0 10px rgba(200, 247, 81, 0.6);
+  transition: width 0.9s linear;
+}
+
+.desktop-timer-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  margin-top: 2px;
+  font-family: var(--font-mono);
+}
+
+.desktop-timer-foot > span {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
+}
+
+.desktop-timer-foot small {
+  font-size: 4.8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(240, 235, 255, 0.34);
+}
+
+.desktop-timer-foot em {
+  font-style: normal;
+  font-size: 6.2px;
+  color: #ece6ff;
+}
+
+.desktop-timer-cta {
+  margin-left: auto;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: rgba(200, 247, 81, 0.14);
+  border: 1px solid rgba(200, 247, 81, 0.3);
+  color: var(--accent);
+  font-size: 5.4px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* desktop taskbar */
+
+.desktop-taskbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(6, 3, 12, 0.66);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-mono);
+  font-size: 5.4px;
+  color: rgba(240, 235, 255, 0.5);
+}
+
+.desktop-taskbar-start {
+  width: 13px;
+  height: 13px;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(140deg, #d4ff5e, #8b5cf6);
+  color: #0a0614;
+  font-family: var(--font-display);
+  font-size: 7px;
+  font-weight: 700;
+}
+
+.desktop-taskbar-app {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.desktop-taskbar-app i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(240, 235, 255, 0.35);
+}
+
+.desktop-taskbar-app i.is-live {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  animation: pulse 2.6s ease-in-out infinite;
+}
+
+.desktop-taskbar-clock {
+  margin-left: auto;
+  color: rgba(240, 235, 255, 0.72);
+}
+
+.desktop-stand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.desktop-stand i {
+  width: 16%;
+  height: 16px;
+  background: linear-gradient(180deg, #1d1233, #0b0617);
+  border-left: 1px solid rgba(167, 139, 250, 0.1);
+  border-right: 1px solid rgba(167, 139, 250, 0.1);
+}
+
+.desktop-stand::after {
+  content: "";
+  width: 32%;
+  height: 6px;
+  border-radius: 999px 999px 4px 4px;
+  background: linear-gradient(180deg, #241640, #0a0614);
+  box-shadow:
+    0 14px 30px -10px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
 /* phone mockup */
 
+.phone-shell {
+  position: absolute;
+  z-index: 4;
+  right: -2%;
+  bottom: -3%;
+  width: calc(266px * var(--phone-scale, 0.64));
+  height: calc(380px * var(--phone-scale, 0.64));
+  animation: float 7.5s ease-in-out infinite;
+  animation-delay: -3.2s;
+}
+
 .phone {
-  position: relative;
-  z-index: 3;
-  width: min(266px, 66%);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 266px;
   padding: 8px;
   border-radius: 34px;
   background: linear-gradient(165deg, #2a1a45 0%, #150c28 42%, #0a0614 100%);
@@ -745,8 +1120,8 @@ svg {
     0 46px 90px -46px rgba(0, 0, 0, 0.95),
     0 0 70px -18px rgba(139, 92, 246, 0.5),
     0 0 120px -40px rgba(200, 247, 81, 0.35);
-  transform: rotate(-1.6deg);
-  animation: float 8s ease-in-out infinite;
+  transform-origin: bottom right;
+  transform: rotate(1.6deg) scale(var(--phone-scale, 0.64));
 }
 
 .phone::before {
@@ -887,6 +1262,7 @@ svg {
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 7px var(--accent);
+  animation: pulse 2.4s ease-in-out infinite;
 }
 
 .phone-panel {
@@ -1020,6 +1396,7 @@ svg {
   border-radius: inherit;
   background: linear-gradient(90deg, var(--accent), #8b5cf6);
   box-shadow: 0 0 10px rgba(200, 247, 81, 0.55);
+  animation: meter 3.4s ease-in-out infinite;
 }
 
 .phone-download > small {
@@ -1102,37 +1479,6 @@ svg {
   animation: float 7.5s ease-in-out infinite;
 }
 
-.float-card--top {
-  top: 3%;
-  left: 4%;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 12px 9px 9px;
-}
-
-.float-icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  background: rgba(200, 247, 81, 0.14);
-  border: 1px solid rgba(200, 247, 81, 0.32);
-  color: var(--accent);
-}
-
-.float-icon svg {
-  width: 13px;
-  height: 13px;
-}
-
-.float-card--top span.float-body {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.25;
-}
-
 .float-card small {
   font-family: var(--font-mono);
   font-size: 6px;
@@ -1141,16 +1487,9 @@ svg {
   color: rgba(240, 235, 255, 0.45);
 }
 
-.float-card--top strong {
-  font-family: var(--font-display);
-  font-size: 13px;
-  color: #fff;
-  letter-spacing: -0.01em;
-}
-
 .float-card--side {
-  right: -6%;
-  bottom: 17%;
+  left: 0;
+  bottom: 9%;
   padding: 10px 12px;
   animation-delay: -2.6s;
 }
@@ -1465,8 +1804,13 @@ svg {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-9px); }
+  0%, 100% { transform: translateY(0) rotate(var(--tilt, 0deg)); }
+  50% { transform: translateY(-9px) rotate(var(--tilt, 0deg)); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
 }
 
 /* ------------------------------- categories ------------------------------ */
@@ -3537,6 +3881,7 @@ svg {
 
   .hero-art {
     max-width: 340px;
+    --phone-scale: 0.56;
   }
 
   .float-card--side {

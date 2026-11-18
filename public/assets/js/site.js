@@ -86,6 +86,7 @@ document.addEventListener('DOMContentLoaded', init);
 
 async function init() {
   bindStaticEvents();
+  startPisonetTimer();
   $('#year').textContent = String(new Date().getFullYear());
 
   try {
@@ -704,4 +705,29 @@ function resetFilters() {
   syncCategoryCards();
   updateClearButton();
   loadInstallers();
+}
+
+function startPisonetTimer() {
+  const clock = document.querySelector('[data-pisonet-clock]');
+  const bar = document.querySelector('[data-pisonet-bar]');
+  if (!clock) return;
+
+  const total = 45 * 60;
+  let left = 42 * 60 + 18;
+
+  const render = () => {
+    const hours = Math.floor(left / 3600);
+    const minutes = Math.floor((left % 3600) / 60);
+    const seconds = left % 60;
+    clock.textContent = [hours, minutes, seconds]
+      .map((part) => String(part).padStart(2, '0'))
+      .join(':');
+    if (bar) bar.style.width = `${(left / total) * 100}%`;
+  };
+
+  render();
+  window.setInterval(() => {
+    left = left <= 1 ? total : left - 1;
+    render();
+  }, 1000);
 }
