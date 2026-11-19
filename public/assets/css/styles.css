@@ -3389,6 +3389,30 @@ svg {
   line-height: 1.65;
 }
 
+.guide-photo {
+  margin: 0 0 22px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse 55% 65% at 50% 45%, rgba(139, 92, 246, 0.22), transparent 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.006));
+  display: grid;
+  place-items: center;
+}
+
+.guide-photo picture {
+  display: block;
+  width: min(100%, 380px);
+}
+
+.guide-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 24px 34px rgba(0, 0, 0, 0.5));
+}
+
 .guide-requirements {
   list-style: none;
   display: flex;

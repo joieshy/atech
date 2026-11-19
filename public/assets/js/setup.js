@@ -70,5 +70,44 @@ function initGuideDownloads() {
     });
 }
 
+/* Kapag galing sa home page (#ruijie, #minipc, ...), siguraduhin na tama ang landing. */
+function initGuideHash() {
+  if (!location.hash) return;
+
+  let target = null;
+  try {
+    target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  } catch {
+    return;
+  }
+  if (!target) return;
+
+  let pinned = true;
+  const release = () => {
+    pinned = false;
+  };
+  window.addEventListener('wheel', release, { once: true, passive: true });
+  window.addEventListener('touchstart', release, { once: true, passive: true });
+
+  const jump = () => {
+    if (!pinned) return;
+    const top = target.getBoundingClientRect().top + window.scrollY - 96;
+    const root = document.documentElement;
+    const previous = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    window.scrollTo(0, Math.max(0, top));
+    root.style.scrollBehavior = previous;
+  };
+
+  // Ang browser ay hindi laging naka-scroll agad sa anchor ng bagong page
+  // (lalo na habang naglo-load pa ang fonts), kaya pilitin natin.
+  window.requestAnimationFrame(jump);
+  window.addEventListener('load', () => window.setTimeout(jump, 40), { once: true });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => window.setTimeout(jump, 40)).catch(() => {});
+  }
+}
+
 initGuideToc();
+initGuideHash();
 initGuideDownloads();
