@@ -451,9 +451,10 @@ function openModal(item) {
 
   const guide = $('#modalGuide');
   if (guide) {
-    const title = `${item.title || ''} ${item.fileType || ''}`.toLowerCase();
+    const title = `${item.title || ''} ${item.fileType || ''} ${item.slug || ''}`.toLowerCase();
     let anchor = 'minipc';
-    if (/coin ?box|nodemcu|esp8266|\.ino|\.bin/.test(title)) anchor = 'nodemcu';
+    if (/ruijie|reyee|ew1200|rg-ew/.test(title)) anchor = 'ruijie';
+    else if (/coin ?box|nodemcu|esp8266|\.ino|\.bin/.test(title)) anchor = 'nodemcu';
     else if (/orange ?pi|armbian|\.xz/.test(title)) anchor = 'orangepi';
     guide.href = `/setup#${anchor}`;
   }
