@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Setup guide — ATECH</title>
-  <meta name="description" content="Tamang setup guide para sa Pay-Fi installers: paano mag-flash ng ISO sa Mini PC at ng image sa Orange Pi One, tapos setup ng dashboard.">
+  <meta name="description" content="Tamang setup guide para sa Pay-Fi installers: paano mag-flash ng ISO sa Mini PC, ng image sa Orange Pi One, ng Pay-Fi firmware sa Ruijie RG-EW1200G PRO, at ng coin box firmware sa NodeMCU, tapos setup ng dashboard.">
   <meta name="theme-color" content="#070411">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css?v=20261117o">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=20261119a">
 </head>
 <body id="top">
   <div class="bg-grid" aria-hidden="true"></div>
@@ -54,9 +54,9 @@
         <span class="eyebrow">Setup guide</span>
         <h1>Kanya-kanyang setup guide,<br><span class="hl-acid">para sa bawat device.</span></h1>
         <p class="guide-lede">
-          Tatlong device ang suportado — <strong>Mini PC</strong> (x86_64, ISO installer), <strong>Orange Pi One</strong>
-          (prebuilt image) at <strong>NodeMCU coin box</strong> (ESP8266 firmware). Nasa
-          <a href="/#installers">Installers</a> section ang mga files.
+          Apat na device ang suportado — <strong>Mini PC</strong> (x86_64, ISO installer), <strong>Orange Pi One</strong>
+          (prebuilt image), <strong>Ruijie RG-EW1200G PRO</strong> (router sysupgrade) at <strong>NodeMCU coin box</strong>
+          (ESP8266 firmware). Nasa <a href="/#installers">Installers</a> section ang mga files.
         </p>
       </div>
 
@@ -74,6 +74,10 @@
           <a href="#nodemcu">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 3v3M12 3v3M17 3v3M7 18v3M12 18v3M17 18v3"/></svg>
             <span>NodeMCU<small>Coin box · ESP8266</small></span>
+          </a>
+          <a href="#ruijie">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="13" width="20" height="8" rx="2"/><path d="M12 13V9M8 9h8M12 9V6M6 3h12"/><path d="M6 17h.01M9 17h.01"/></svg>
+            <span>Ruijie router<small>Stock → Pay-Fi flash</small></span>
           </a>
         </aside>
 
@@ -511,6 +515,219 @@
               <span class="guide-file" data-file="nodemcu">payfi-coinbox-nodemcu.zip (.ino + .bin)</span>
             </div>
           </article>
+
+          <!-- ============================== RUIJIE =========================== -->
+          <article class="guide-block" id="ruijie">
+            <div class="guide-block-head">
+              <span class="guide-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="13" width="20" height="8" rx="2"/><path d="M12 13V9M8 9h8M12 9V6M6 3h12"/><path d="M6 17h.01M9 17h.01"/></svg>
+              </span>
+              <div>
+                <span class="guide-tag">Ruijie · OpenWrt 24.10.5</span>
+                <h2>Ruijie RG-EW1200G PRO setup</h2>
+                <p>Stock Ruijie firmware → downgrade sa v1.317 → flash ng Pay-Fi image. Isang router lang ang kailangan:
+                  nasa loob na ang customer portal, admin dashboard at LuCI.</p>
+              </div>
+            </div>
+
+            <ul class="guide-requirements">
+              <li>RG-EW1200G PRO</li>
+              <li>Hardware V1.1 / V3.x</li>
+              <li>LAN cable</li>
+              <li>PC / laptop</li>
+              <li>Official v1.317 file</li>
+            </ul>
+
+            <div class="guide-note">
+              <strong>⚠️ I-check ang sticker sa ilalim.</strong> Dapat <em>RG-EW1200G PRO</em> at Hardware Ver
+              <em>V1.1</em> o <em>V3.x</em> (hal. V3.32). Kung iba ang model o hardware version —
+              <strong>huwag i-flash</strong>, baka ma-brick ang unit.
+            </div>
+
+            <h3 class="guide-subhead">Bago magsimula — checklist</h3>
+            <ol class="guide-steps">
+              <li>
+                <strong>LAN cable: PC → LAN port</strong>
+                <span>Ikabit sa <em>LAN</em>, hindi sa WAN. I-set ang PC sa DHCP (automatic), o <code>192.168.110.x</code>
+                  kung manu-mano, para makapasok sa stock UI.</span>
+              </li>
+              <li>
+                <strong>I-save ang official Ruijie v1.317 firmware</strong>
+                <span>Kailangan ito pang-downgrade. Tinatanggihan ng bagong Reyee firmware (v3.80 / v4.20) ang OpenWrt —
+                  ang v1.317 lang ang tumatanggap.</span>
+              </li>
+              <li>
+                <strong>Huwag bunutin ang power habang nag-a-upgrade</strong>
+                <span>Hintayin ang 3–5 minuto at ang kusang pag-restart ng router.</span>
+              </li>
+            </ol>
+
+            <h3 class="guide-subhead">Part 1 — Downgrade sa official v1.317</h3>
+            <ol class="guide-steps">
+              <li>
+                <strong>I-download ang v1.317 (ReyeeOS317)</strong>
+                <span>Kunin sa official Reyee resources page: <a href="https://reyee.ruijie.com/en-global/resources/software/ew1200g-pro-firmware/1200gpro-317-firmware/" target="_blank" rel="noopener">ew1200g-pro v1.317 firmware</a>.
+                  Pwede rin ang JANDY guide mirror: <a href="https://jandy.tech/guide/" target="_blank" rel="noopener">jandy.tech/guide</a>.</span>
+              </li>
+              <li>
+                <strong>Buksan ang stock Ruijie web UI</strong>
+                <span><code>http://192.168.110.1</code> (o <code>http://ruiyi.cn</code>).</span>
+              </li>
+              <li>
+                <strong>System → Upgrade → Local Upgrade</strong>
+                <span>Browse → piliin ang v1.317 file → Upload → OK.</span>
+              </li>
+              <li>
+                <strong>Hintayin ang restart</strong>
+                <span>3–5 minuto. Kusang magre-restart ang router. Kung naka-v1.317 na ito, laktawan ang Part 1.</span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>Official Ruijie file lang sa Part 1.</strong> Huwag gamitin ang Pay-Fi image dito —
+              baka tanggihan ng stock updater o ma-brick ang unit.
+            </div>
+
+            <h3 class="guide-subhead">Part 2 — I-flash ang Pay-Fi image</h3>
+            <ol class="guide-steps">
+              <li>
+                <strong>I-download ang Pay-Fi sysupgrade image</strong>
+                <span><code>PayFi-Ruijie-EW1200G-PRO-v1.0-sysupgrade.bin</code> — mga 9.6 MB. Kunin sa
+                  <a href="/#installers">Installers</a> section.</span>
+              </li>
+              <li>
+                <strong>Sa stock UI (v1.317): System → Upgrade → Local Upgrade</strong>
+                <span>Browse → piliin ang <code>PayFi-Ruijie-EW1200G-PRO-v1.0-sysupgrade.bin</code>.</span>
+              </li>
+              <li>
+                <strong>Upload → OK → hintayin 3–5 minuto</strong>
+                <span>Huwag bunutin ang power at huwag i-refresh nang i-refresh habang naka-upgrade.</span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>Pagkatapos ng flash:</strong> OpenWrt + Pay-Fi na ang router. Bagong address:
+              <code>http://10.0.0.1</code>. Kung may naka-attach na file, pwede mong i-verify ang
+              SHA256: <code>5c4f85d3c758103a03d5e6f7e3db3fc48e1d125c534be711577052cad3905f30</code>.
+            </div>
+
+            <h3 class="guide-subhead">Part 3 — First boot at login</h3>
+            <ol class="guide-steps">
+              <li>
+                <strong>Wired o WiFi</strong>
+                <span>PC → LAN port, tapos buksan ang <code>http://10.0.0.1</code>. WiFi: <code>ShaiderBAM PisoWIFI</code>
+                  (open, walang password) o <code>ShaiderBAM PisoWIFI 5G</code>.</span>
+              </li>
+              <li>
+                <strong>Customer portal</strong>
+                <span><code>http://10.0.0.1/</code> — ito ang nakikita ng customers para mag-redeem ng voucher o magbayad.</span>
+              </li>
+              <li>
+                <strong>Admin dashboard (operator)</strong>
+                <span><code>http://10.0.0.1/admin</code> · user <code>admin</code> · pass <code>admin2234</code>.
+                  <strong>Palitan agad</strong> ang password.</span>
+              </li>
+              <li>
+                <strong>LuCI / OpenWrt</strong>
+                <span><code>http://10.0.0.1:8080</code> o <code>ssh root@10.0.0.1</code>.
+                  <em>Walang default root password</em> — i-set agad sa first boot (LuCI → System → Administration, o <code>passwd</code>).</span>
+              </li>
+            </ol>
+
+            <table class="guide-wiring">
+              <thead>
+                <tr><th>Setting</th><th>Default</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>LAN IP</td><td><code>10.0.0.1</code> / <code>255.255.224.0</code></td></tr>
+                <tr><td>DHCP pool</td><td><code>10.0.0.100</code> – <code>10.0.31.255</code></td></tr>
+                <tr><td>WiFi</td><td>Open — 2.4G at 5G</td></tr>
+                <tr><td>Pay-Fi port</td><td><code>80</code></td></tr>
+                <tr><td>LuCI port</td><td><code>8080</code></td></tr>
+                <tr><td>Hostname</td><td><code>OpenWrt</code></td></tr>
+              </tbody>
+            </table>
+
+            <h3 class="guide-subhead">Part 4 — Gawin agad pagka-boot</h3>
+            <ol class="guide-steps">
+              <li>
+                <strong>Admin → Branding</strong>
+                <span>Palitan ang admin password, brand name (hal. <em>ShaiderBAM PisoWIFI</em>), announcement at
+                  Home URL (<code>http://10.0.0.1</code>). Ilagay din ang coinbox token — default ay <code>payfi-coin</code>.</span>
+              </li>
+              <li>
+                <strong>Admin → Rates</strong>
+                <span>Ilagay ang tamang presyo at oras ng bawat session.</span>
+              </li>
+              <li>
+                <strong>Admin → Vouchers</strong>
+                <span>Gumawa ng test codes, tapos i-redeem sa portal — dapat lumabas ang session screen.</span>
+              </li>
+              <li>
+                <strong>Coinbox setup page</strong>
+                <span>Sa <code>http://192.168.4.1</code>: Server host <code>10.0.0.1</code> · Port <code>80</code> ·
+                  Token <code>payfi-coin</code> · Device <code>coinbox-1</code>. Pagkatapos, Admin → Coinbox → dapat <em>ONLINE</em>.</span>
+              </li>
+              <li>
+                <strong>PayMongo keys (kung gagamitin)</strong>
+                <span>Admin → PayMongo → ilagay ang public at secret key (Test o Live). Walang default keys ang image.</span>
+              </li>
+            </ol>
+
+            <h3 class="guide-subhead">Susunod na update</h3>
+            <ol class="guide-steps">
+              <li>
+                <strong>Sa LuCI</strong>
+                <span>System → Backup / Flash Firmware → Flash image… → Browse → Upload. I-uncheck ang
+                  <em>Keep settings</em> kung major update.</span>
+              </li>
+              <li>
+                <strong>O sa SSH</strong>
+                <span><code>sysupgrade -n /tmp/image.bin</code></span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>Nasa <code>/etc/payfi/data</code> ang <code>data.json</code></strong> (vouchers at sales).
+              Kasama ito sa backup — i-check ang <em>Keep settings</em> kung gusto mong itago ang data.
+            </div>
+
+            <h3 class="guide-subhead">Kung may aberya (recovery)</h3>
+            <ol class="guide-steps">
+              <li>
+                <strong>U-Boot / stock recovery via TFTP</strong>
+                <span>Kung paulit-ulit na nabigo mag-boot: LAN cable PC → LAN port, PC IP <code>192.168.64.1</code>
+                  (walang gateway), tapos magpatakbo ng TFTP server sa PC at i-share ang file na pinangalanang
+                  <code>rgos.bin</code> (official v1.317 o recovery image). I-power on ang router at hintayin 5–10 minuto.</span>
+              </li>
+              <li>
+                <strong>OpenWrt failsafe</strong>
+                <span>Kung naka-OpenWrt na at na-lock out: habang nagbo-boot, pindutin nang pindutin ang reset,
+                  tapos <code>http://192.168.1.1</code> → failsafe → sysupgrade.</span>
+              </li>
+            </ol>
+
+            <div class="guide-note">
+              <strong>May mga unit na <code>192.168.1.1</code> ang hinahanap</strong> sa recovery. Kung ayaw sa
+              <code>192.168.64.1</code>, subukan ang <code>192.168.1.1</code>.
+            </div>
+
+            <div class="guide-note">
+              <strong>Limitasyon ng v1.0 image:</strong> hindi pa naka-enable ang automatic captive redirect (DNAT) —
+              kailangang buksan ng customer ang <code>http://10.0.0.1</code> para lumabas ang portal.
+              Simulated/demo pa ang GCash sa portal; ang coinbox ang totoong gumagana. Walang auto-update —
+              manual LuCI/sysupgrade muna. Susunod na build: captive redirect + GCash live + OTA update.
+            </div>
+
+            <div class="guide-actions">
+              <a class="btn btn--primary btn--sm" href="/#installers" data-download="ruijie">
+                I-download ang image
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+              <a class="btn btn--outline btn--sm" href="#top">Balik sa taas</a>
+              <span class="guide-file" data-file="ruijie">PayFi-Ruijie-EW1200G-PRO-v1.0-sysupgrade.bin</span>
+            </div>
+          </article>
         </div>
       </div>
     </div>
@@ -523,6 +740,6 @@
     </div>
   </footer>
 
-  <script src="/assets/js/setup.js?v=20261117c" defer></script>
+  <script src="/assets/js/setup.js?v=20261119a" defer></script>
 </body>
 </html>

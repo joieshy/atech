@@ -51,7 +51,8 @@ function initGuideDownloads() {
       const matches = {
         minipc: pick(/^iso$/i),
         orangepi: pick(/^(xz|img|gz)$/i),
-        nodemcu: pick(/^(ino|bin)$/i, /coin ?box|nodemcu|esp8266/i)
+        nodemcu: pick(/^(ino|bin)$/i, /coin ?box|nodemcu|esp8266/i),
+        ruijie: pick(/$^/, /ruijie|ew1200|rg-ew/i)
       };
 
       Object.entries(matches).forEach(([key, item]) => {
